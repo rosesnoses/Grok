@@ -1,0 +1,83 @@
+# GrokMandala / Aurion + Sangraha
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# Virtual envs
+.venv/
+venv/
+ENV/
+env/
+
+# Poetry / uv / pipenv
+poetry.lock
+Pipfile.lock
+
+# Node / browser (if any tooling)
+node_modules/
+npm-debug.log*
+
+# IDE / OS
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db
+
+# Secrets & local config
+.env
+.env.local
+*.pem
+secrets/
+credentials.json
+
+# Large generated artifacts (keep examples/ small)
+*.png
+!examples/*.png
+!browser-lab/screenshots/*.png
+*.wav
+*.mp3
+*.flac
+*.sva6
+*.sva
+
+# Test / QA outputs
+test_reports/
+*.log
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Cursor / AI agent internals (do not publish session state)
+.cursor/
+agent-transcripts/
+canvases/
+mcps/
+terminals/
+
+# Temporary
+tmp/
+temp/
+*.tmp

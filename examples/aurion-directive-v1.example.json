@@ -1,0 +1,44 @@
+{
+  "version": "aurion-art-directive-v1",
+  "source_audio": {
+    "sha256": "c3ab8ff13720e8ad9047dd39466b3c8974e592c2fa383d4a3960714caef0c4f2",
+    "duration_s": 187.3,
+    "bpm": 92,
+    "spectral_centroid": 1240.5,
+    "rms_energy": 0.18,
+    "zero_crossing_rate": 0.041
+  },
+  "seed": 2761847853,
+  "archetype": {
+    "id": "lotus-throne-13",
+    "family": "floral-cosmic",
+    "name": "Lotus Throne"
+  },
+  "geometry": {
+    "symmetry": 8,
+    "rings": 13,
+    "petal_density": 1.7,
+    "spiral_tension": 0.92,
+    "energy_bias": 0.65
+  },
+  "color": {
+    "palette": "plasma-dawn",
+    "primary_hue": 285,
+    "saturation": 0.92,
+    "glow_temperature": 6200
+  },
+  "layers": [
+    "base_cymatic_field",
+    "mandala_skeleton",
+    "filament_network",
+    "glow_veins",
+    "star_nodes",
+    "logo_energy_overlay"
+  ],
+  "render_targets": ["preview", "8k-master"],
+  "metadata": {
+    "title": "Example — Dawn Lotus",
+    "artist": "Reference Set",
+    "extractor": "directive_extractor.py@v1"
+  }
+}
