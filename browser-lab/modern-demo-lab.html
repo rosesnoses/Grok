@@ -1,0 +1,1033 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GrokMandala • Browser Lab — Aurion v1 + Live Sangraha Preview</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&amp;family=Space+Grotesk:wght@500;600&amp;display=swap');
+    
+    :root {
+      --cosmic-bg: #0a0a12;
+    }
+    
+    body {
+      font-family: 'Inter', system_ui, sans-serif;
+    }
+    
+    .font-display {
+      font-family: 'Space Grotesk', 'Inter', sans-serif;
+      font-feature-settings: "ss01";
+    }
+
+    .cosmic-bg {
+      background: radial-gradient(circle at center, #1a1625 0%, #0a0a12 70%);
+    }
+
+    .mandala-canvas {
+      box-shadow: 0 25px 50px -12px rgb(0 0 0 / 0.4),
+                  0 0 0 1px rgb(255 255 255 / 0.05) inset,
+                  0 0 80px -20px rgb(167 139 250 / 0.15);
+      transition: transform 0.2s cubic-bezier(0.23, 1, 0.32, 1);
+    }
+    
+    .mandala-canvas:hover {
+      transform: scale(1.01);
+    }
+
+    .section-header {
+      font-size: 0.75rem;
+      letter-spacing: 0.125em;
+      text-transform: uppercase;
+      font-weight: 600;
+    }
+
+    .cosmic-input {
+      background: #111113;
+      border: 1px solid #2a2a35;
+      transition: all 0.1s ease;
+    }
+    
+    .cosmic-input:focus {
+      border-color: #6366f1;
+      box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+      outline: none;
+    }
+
+    .layer-pill {
+      font-size: 0.65rem;
+      padding: 1px 9px;
+      background: #1f1f27;
+      border: 1px solid #2f2f3a;
+      border-radius: 9999px;
+    }
+
+    .value-badge {
+      font-family: ui-monospace, monospace;
+      background: #1a1a22;
+      padding: 1px 6px;
+      border-radius: 3px;
+      font-size: 0.7rem;
+    }
+
+    .directive-json {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+      font-size: 0.72rem;
+      line-height: 1.35;
+    }
+
+    .glow-text {
+      text-shadow: 0 0 10px rgb(167 139 250 / 0.5);
+    }
+
+    .cosmic-divider {
+      height: 1px;
+      background: linear-gradient(to right, transparent, #2a2a35, transparent);
+    }
+
+    .mandala-container {
+      background: #050508;
+      border-radius: 9999px;
+      padding: 24px;
+      box-shadow: 0 0 0 1px #1f1f27,
+                  inset 0 0 120px rgb(0 0 0 / 0.6);
+    }
+  </style>
+</head>
+<body class="bg-[#0a0a12] text-zinc-200">
+  <div class="max-w-[1280px] mx-auto">
+    <!-- Top nav -->
+    <div class="flex items-center justify-between px-8 pt-6 pb-4">
+      <div class="flex items-center gap-x-3">
+        <div class="w-9 h-9 rounded-2xl bg-gradient-to-br from-violet-500 to-indigo-600 flex items-center justify-center">
+          <i class="fa-solid fa-infinity text-white text-2xl"></i>
+        </div>
+        <div>
+          <div class="font-display text-3xl font-semibold tracking-tighter">grokmandala</div>
+          <div class="text-[10px] text-zinc-500 -mt-1">AURION v1 • SVA6</div>
+        </div>
+      </div>
+      
+      <div class="flex items-center gap-x-2 text-sm">
+        <div class="px-3 py-1 rounded-full bg-white/5 text-xs flex items-center gap-x-1.5 border border-white/10">
+          <div class="w-2 h-2 bg-emerald-400 rounded-full animate-pulse"></div>
+          <span class="text-emerald-300 font-medium">LIVE PREVIEW</span>
+        </div>
+        <a href="https://github.com/Rosesnoses/grokmandala" target="_blank"
+           class="flex items-center gap-x-2 px-4 py-1.5 rounded-2xl bg-white/5 hover:bg-white/10 border border-white/10 transition-colors text-sm">
+          <i class="fa-brands fa-github"></i>
+          <span class="hidden sm:inline">Rosesnoses/grokmandala</span>
+        </a>
+      </div>
+    </div>
+
+    <div class="px-8 pb-8">
+      <!-- Hero -->
+      <div class="mb-8">
+        <div class="flex items-baseline gap-x-4">
+          <h1 class="font-display text-6xl font-semibold tracking-tighter">Browser Lab</h1>
+          <div class="text-violet-400 text-xl font-medium">aurion-art-directive-v1</div>
+        </div>
+        <p class="max-w-xl text-lg text-zinc-400 mt-2">
+          Watch your music become geometry. The same directive that drives Sangraha’s 8K cathedral renderers powers this live forge.
+        </p>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+        
+        <!-- THE CANVAS -->
+        <div class="lg:col-span-7">
+          <div class="flex items-center justify-between mb-3 px-1">
+            <div>
+              <div class="section-header text-violet-400">Live Cosmic Yantra</div>
+              <div class="text-xs text-zinc-500">Real-time • Same directive as Sangraha</div>
+            </div>
+            <div class="flex items-center gap-x-2">
+              <button onclick="randomizeDirective()" 
+                      class="px-4 py-1.5 text-xs rounded-2xl border border-white/10 hover:bg-white/5 active:bg-white/10 flex items-center gap-x-2 transition-all">
+                <i class="fa-solid fa-dice"></i>
+                <span>Randomize</span>
+              </button>
+              <button onclick="resetToDefault()" 
+                      class="px-3 py-1.5 text-xs rounded-2xl border border-white/10 hover:bg-white/5 flex items-center gap-x-2">
+                <i class="fa-solid fa-undo"></i>
+              </button>
+            </div>
+          </div>
+
+          <div class="mandala-container flex justify-center">
+            <canvas id="mandala" width="820" height="820" 
+                    class="mandala-canvas bg-black rounded-[48px] cursor-crosshair touch-none"
+                    style="max-width: 100%; height: auto;"></canvas>
+          </div>
+          
+          <div class="flex justify-center mt-3 gap-x-3 text-[10px] text-zinc-500">
+            <div class="flex items-center gap-x-1.5"><i class="fa-solid fa-music"></i> <span id="audio-name">No audio loaded</span></div>
+            <div class="text-white/30">•</div>
+            <div>Drag &amp; drop MP3/WAV anywhere on the canvas</div>
+          </div>
+        </div>
+
+        <!-- CONTROLS -->
+        <div class="lg:col-span-5 space-y-6">
+          
+          <!-- Audio Source -->
+          <div class="bg-[#111113] border border-white/10 rounded-3xl p-5">
+            <div class="section-header mb-3 text-amber-400">Audio Source</div>
+            
+            <div class="flex gap-3">
+              <label class="flex-1 cursor-pointer">
+                <div class="border border-dashed border-white/20 hover:border-violet-500/60 transition-colors rounded-2xl p-4 text-center">
+                  <i class="fa-solid fa-upload text-xl mb-1 text-violet-400"></i>
+                  <div class="text-sm font-medium">Upload audio</div>
+                  <div class="text-[10px] text-zinc-500">MP3 • WAV • OGG</div>
+                </div>
+                <input type="file" id="audio-upload" accept="audio/*" class="hidden" onchange="handleAudioUpload(event)">
+              </label>
+              
+              <button onclick="useSampleTone()" 
+                      class="flex-1 border border-white/20 hover:bg-white/5 rounded-2xl text-sm flex flex-col items-center justify-center transition-colors">
+                <i class="fa-solid fa-waveform-lines mb-0.5"></i>
+                <span class="text-xs">Use sample tone</span>
+              </button>
+            </div>
+            
+            <div class="mt-3 text-[10px] flex items-center gap-2 text-emerald-400/70" id="analysis-status" style="display:none;">
+              <i class="fa-solid fa-microchip"></i> 
+              <span>Analyzing… computing Aurion directive</span>
+            </div>
+          </div>
+
+          <!-- Geometry -->
+          <div class="bg-[#111113] border border-white/10 rounded-3xl p-5">
+            <div class="flex items-center justify-between mb-3">
+              <div class="section-header text-sky-400">Geometry</div>
+              <div id="geometry-badge" class="value-badge text-sky-300/70"></div>
+            </div>
+            
+            <div class="space-y-4">
+              <!-- Symmetry -->
+              <div>
+                <div class="flex justify-between text-xs mb-1.5">
+                  <div class="text-zinc-400">Symmetry <span class="text-white/40">(axes / petals)</span></div>
+                  <div id="sym-val" class="value-badge text-sky-300">8</div>
+                </div>
+                <input type="range" id="symmetry" min="3" max="18" step="1" value="8" 
+                       class="w-full accent-violet-500 cosmic-input" oninput="updateDirectiveFromUI()">
+              </div>
+              
+              <!-- Rings -->
+              <div>
+                <div class="flex justify-between text-xs mb-1.5">
+                  <div class="text-zinc-400">Rings</div>
+                  <div id="rings-val" class="value-badge text-sky-300">13</div>
+                </div>
+                <input type="range" id="rings" min="3" max="24" step="1" value="13" 
+                       class="w-full accent-violet-500 cosmic-input" oninput="updateDirectiveFromUI()">
+              </div>
+              
+              <!-- Density & Tension -->
+              <div class="grid grid-cols-2 gap-4">
+                <div>
+                  <div class="flex justify-between text-xs mb-1.5">
+                    <div class="text-zinc-400">Petal Density</div>
+                    <div id="density-val" class="value-badge text-sky-300">1.70</div>
+                  </div>
+                  <input type="range" id="density" min="0.3" max="4.5" step="0.05" value="1.7" 
+                         class="w-full accent-violet-500 cosmic-input" oninput="updateDirectiveFromUI()">
+                </div>
+                <div>
+                  <div class="flex justify-between text-xs mb-1.5">
+                    <div class="text-zinc-400">Spiral Tension</div>
+                    <div id="tension-val" class="value-badge text-sky-300">0.92</div>
+                  </div>
+                  <input type="range" id="tension" min="0.2" max="1.5" step="0.01" value="0.92" 
+                         class="w-full accent-violet-500 cosmic-input" oninput="updateDirectiveFromUI()">
+                </div>
+              </div>
+              
+              <div>
+                <div class="flex justify-between text-xs mb-1.5">
+                  <div class="text-zinc-400">Energy Bias <span class="text-white/30">(outer → center)</span></div>
+                  <div id="energy-val" class="value-badge text-sky-300">0.65</div>
+                </div>
+                <input type="range" id="energy" min="0.1" max="0.95" step="0.01" value="0.65" 
+                       class="w-full accent-violet-500 cosmic-input" oninput="updateDirectiveFromUI()">
+              </div>
+            </div>
+          </div>
+
+          <!-- Color -->
+          <div class="bg-[#111113] border border-white/10 rounded-3xl p-5">
+            <div class="section-header mb-3 text-rose-400">Color &amp; Light</div>
+            
+            <div class="grid grid-cols-2 gap-x-4 gap-y-3">
+              <div>
+                <div class="text-xs text-zinc-400 mb-1">Primary Hue</div>
+                <div class="flex items-center gap-3">
+                  <input type="range" id="hue" min="0" max="360" value="285" 
+                         class="flex-1 accent-rose-500 cosmic-input" oninput="updateDirectiveFromUI()">
+                  <div id="hue-val" class="value-badge w-9 text-center text-rose-300">285</div>
+                </div>
+              </div>
+              <div>
+                <div class="text-xs text-zinc-400 mb-1">Saturation</div>
+                <div class="flex items-center gap-3">
+                  <input type="range" id="sat" min="0.4" max="1" step="0.01" value="0.92" 
+                         class="flex-1 accent-rose-500 cosmic-input" oninput="updateDirectiveFromUI()">
+                  <div id="sat-val" class="value-badge w-9 text-center text-rose-300">0.92</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Layers -->
+          <div class="bg-[#111113] border border-white/10 rounded-3xl p-5">
+            <div class="section-header mb-2.5 text-emerald-400">Active Layers</div>
+            <div class="flex flex-wrap gap-1.5" id="layer-pills">
+              <!-- populated by JS -->
+            </div>
+            <div class="text-[10px] text-emerald-300/60 mt-3">Same layers drive Sangraha’s reference render</div>
+          </div>
+
+          <!-- Actions -->
+          <div class="flex flex-wrap gap-3">
+            <button onclick="exportDirective()" 
+                    class="flex-1 bg-white text-black font-semibold rounded-2xl py-3 text-sm flex items-center justify-center gap-x-2 hover:bg-zinc-100 active:scale-[0.985] transition">
+              <i class="fa-solid fa-file-export"></i>
+              <span>Export Directive JSON</span>
+            </button>
+            
+            <button onclick="copyDirectiveToClipboard()" 
+                    class="px-5 bg-white/5 hover:bg-white/10 border border-white/10 rounded-2xl text-sm flex items-center gap-x-2">
+              <i class="fa-solid fa-copy"></i>
+            </button>
+            
+            <button onclick="sendToSangraha()" 
+                    class="flex-1 border border-violet-500/40 hover:bg-violet-950/30 text-violet-300 rounded-2xl py-3 text-sm flex items-center justify-center gap-x-2 transition">
+              <i class="fa-solid fa-rocket"></i>
+              <span>Forge in Sangraha</span>
+            </button>
+          </div>
+          
+          <div class="text-[10px] text-center text-zinc-500">
+            The exported directive is 100% compatible with <code class="text-violet-400">sangraha forge --directive</code>
+          </div>
+        </div>
+
+        <!-- Directive inspector -->
+        <div class="lg:col-span-12">
+          <details class="bg-[#0c0c14] border border-white/10 rounded-3xl px-5 py-4 group" open>
+            <summary class="cursor-pointer flex items-center justify-between text-sm font-medium text-zinc-400 group-open:text-white">
+              <div class="flex items-center gap-x-2">
+                <i class="fa-solid fa-file-code"></i>
+                <span>Live Aurion Art Directive (v1)</span>
+              </div>
+              <span class="text-[10px] group-open:hidden text-violet-400">click to inspect</span>
+            </summary>
+            <pre id="directive-json" 
+                 class="directive-json mt-3 p-4 bg-black/60 rounded-2xl overflow-auto max-h-[260px] text-emerald-300/90 border border-white/5"></pre>
+          </details>
+        </div>
+        
+      </div>
+    </div>
+  </div>
+
+  <footer class="text-center text-[10px] text-zinc-500 pb-8 pt-4 border-t border-white/10 mt-4">
+    Built for the Mandala Crusade • Same directive • Same soul • Browser preview ↔ Sangraha 8K
+  </footer>
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    // Tailwind script
+    function initTailwind() {
+      document.querySelectorAll('script').forEach(s => {
+        if (s.src && s.src.includes('tailwindcss')) {
+          // already loaded via CDN
+        }
+      });
+    }
+
+    // ===== CORE STATE =====
+    let currentDirective = null;
+    let audioContext = null;
+    let audioBuffer = null;
+    let analyser = null;
+    let animationFrame = null;
+    let lastAudioFeatures = null;
+
+    const canvas = document.getElementById('mandala');
+    const ctx = canvas.getContext('2d', { alpha: true });
+
+    // ===== DIRECTIVE DEFAULT (beautiful starting point) =====
+    function getDefaultDirective() {
+      return {
+        version: "aurion-art-directive-v1",
+        source_audio: {
+          sha256: "a".repeat(64),
+          duration_s: 187.4,
+          bpm: 92,
+          spectral_centroid: 1340,
+          rms_energy: 0.18,
+          zero_crossing_rate: 0.041
+        },
+        seed: 0xA4F19C2D,
+        archetype: { id: "lotus-throne-13", family: "floral-cosmic", name: "Lotus Throne" },
+        geometry: {
+          symmetry: 8,
+          rings: 13,
+          petal_density: 1.7,
+          spiral_tension: 0.92,
+          energy_bias: 0.65
+        },
+        color: {
+          palette: "plasma-dawn",
+          primary_hue: 285,
+          saturation: 0.92,
+          glow_temperature: 6200
+        },
+        layers: [
+          "base_cymatic_field", "mandala_skeleton", "filament_network",
+          "glow_veins", "star_nodes", "logo_energy_overlay"
+        ],
+        metadata: { title: "Untitled", artist: "—", source: "browser-lab" }
+      };
+    }
+
+    // ===== RENDERER (mirrors Python Sangraha logic as closely as possible) =====
+    function drawMandala(directive) {
+      const w = canvas.width;
+      const h = canvas.height;
+      const cx = w / 2;
+      const cy = h / 2;
+      const R = Math.min(w, h) * 0.475;
+
+      ctx.save();
+      ctx.clearRect(0, 0, w, h);
+
+      // Background
+      const bg = hslToRgb((directive.color.primary_hue + 180) % 360, directive.color.saturation * 0.28, 0.065);
+      ctx.fillStyle = `rgb(${bg[0]},${bg[1]},${bg[2]})`;
+      ctx.fillRect(0, 0, w, h);
+
+      const g = directive.geometry;
+      const c = directive.color;
+      const seed = directive.seed;
+      const rng = mulberry32(seed);
+
+      // Helper colors
+      const ringCol = hslToRgb(c.primary_hue, c.saturation, 0.9);
+      const filamentCol = hslToRgb((c.primary_hue + 22) % 360, Math.min(1, c.saturation + 0.08), 0.82);
+      const glowCol = hslToRgb((c.primary_hue + 38) % 360, 0.55, 0.68);
+      const starCol = [255, 252, 235];
+      const energyCol = hslToRgb((c.primary_hue + 75) % 360, 0.88, 0.82);
+
+      const layers = new Set(directive.layers);
+
+      // 1. Cymatic base (wavy rings)
+      if (layers.has("base_cymatic_field")) {
+        ctx.strokeStyle = `rgba(${ringCol[0]},${ringCol[1]},${ringCol[2]},0.55)`;
+        ctx.lineWidth = 1.2;
+        for (let i = 0; i < g.rings; i++) {
+          const frac = (i + 1) / (g.rings + 0.6);
+          const rr = R * (0.12 + 0.86 * frac);
+          ctx.beginPath();
+          const steps = 220;
+          for (let a = 0; a <= steps; a++) {
+            const ang = (a / steps) * Math.PI * 2;
+            const wave = 0.011 * Math.sin(7 * ang + i * 1.3) + 0.006 * Math.sin(14 * ang + rng() * 2);
+            const rad = rr * (1 + wave);
+            const x = cx + rad * Math.cos(ang);
+            const y = cy + rad * Math.sin(ang);
+            if (a === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+          }
+          ctx.closePath();
+          ctx.stroke();
+
+          if (i % 3 === 0) {
+            for (let k = 0; k < g.symmetry * 2; k++) {
+              const ang = (k / (g.symmetry * 2)) * Math.PI * 2;
+              const nx = cx + rr * 0.985 * Math.cos(ang);
+              const ny = cy + rr * 0.985 * Math.sin(ang);
+              ctx.fillStyle = `rgba(255,255,240,0.6)`;
+              ctx.fillRect(nx - 0.8, ny - 0.8, 1.6, 1.6);
+            }
+          }
+        }
+      }
+
+      // 2. Skeleton (radial spokes)
+      if (layers.has("mandala_skeleton")) {
+        ctx.strokeStyle = `rgba(${ringCol[0]},${ringCol[1]},${ringCol[2]},0.35)`;
+        ctx.lineWidth = 1;
+        for (let i = 0; i < g.rings; i++) {
+          const rr = R * (0.1 + 0.88 * (i + 1) / (g.rings + 1));
+          for (let k = 0; k < g.symmetry; k++) {
+            const ang = (k / g.symmetry) * Math.PI * 2;
+            ctx.beginPath();
+            ctx.moveTo(cx, cy);
+            ctx.lineTo(cx + rr * Math.cos(ang), cy + rr * Math.sin(ang));
+            ctx.stroke();
+          }
+        }
+      }
+
+      // 3. Filament network
+      if (layers.has("filament_network")) {
+        const count = Math.floor(16 * g.petal_density);
+        ctx.strokeStyle = `rgba(${filamentCol[0]},${filamentCol[1]},${filamentCol[2]},0.38)`;
+        ctx.lineWidth = 1.1;
+        
+        for (let i = 0; i < count; i++) {
+          const phase = (i / count) * Math.PI * 2 + (rng() - 0.5) * 0.1;
+          const len = R * (0.32 + rng() * 0.58);
+          const x2 = cx + len * Math.cos(phase);
+          const y2 = cy + len * Math.sin(phase);
+          
+          ctx.beginPath();
+          ctx.moveTo(cx, cy);
+          ctx.lineTo(x2, y2);
+          ctx.stroke();
+
+          // curls
+          if (rng() > 0.38) {
+            ctx.beginPath();
+            let px = x2, py = y2;
+            const curls = 5;
+            for (let t = 1; t <= curls; t++) {
+              const ang = phase + t * 0.55 * g.spiral_tension * (i % 2 ? 1 : -1);
+              const rad = len * (0.09 + t * 0.055);
+              const nx = px + rad * Math.cos(ang);
+              const ny = py + rad * Math.sin(ang);
+              ctx.lineTo(nx, ny);
+              px = nx; py = ny;
+            }
+            ctx.stroke();
+          }
+        }
+
+        // constellation connections
+        ctx.strokeStyle = `rgba(${filamentCol[0]},${filamentCol[1]},${filamentCol[2]},0.13)`;
+        ctx.lineWidth = 0.8;
+        for (let i = 0; i < Math.floor(14 * g.petal_density); i++) {
+          const a1 = rng() * Math.PI * 2;
+          const a2 = rng() * Math.PI * 2;
+          const r1 = R * (0.18 + rng() * 0.72);
+          const r2 = R * (0.18 + rng() * 0.72);
+          ctx.beginPath();
+          ctx.moveTo(cx + r1 * Math.cos(a1), cy + r1 * Math.sin(a1));
+          ctx.lineTo(cx + r2 * Math.cos(a2), cy + r2 * Math.sin(a2));
+          ctx.stroke();
+        }
+      }
+
+      // 4. Glow veins (soft multiple strokes)
+      if (layers.has("glow_veins")) {
+        ctx.strokeStyle = `rgba(${glowCol[0]},${glowCol[1]},${glowCol[2]},0.09)`;
+        ctx.lineWidth = 7;
+        for (let k = 0; k < g.symmetry * 3; k++) {
+          const ang = (k / (g.symmetry * 3)) * Math.PI * 2 + (rng() - 0.5) * 0.2;
+          const len = R * (0.42 + rng() * 0.45);
+          ctx.beginPath();
+          ctx.moveTo(cx, cy);
+          ctx.lineTo(cx + len * Math.cos(ang), cy + len * Math.sin(ang));
+          ctx.stroke();
+        }
+        // second softer pass
+        ctx.strokeStyle = `rgba(${glowCol[0]},${glowCol[1]},${glowCol[2]},0.05)`;
+        ctx.lineWidth = 14;
+        for (let k = 0; k < g.symmetry * 2; k++) {
+          const ang = (k / (g.symmetry * 2)) * Math.PI * 2;
+          const len = R * (0.55 + rng() * 0.3);
+          ctx.beginPath();
+          ctx.moveTo(cx, cy);
+          ctx.lineTo(cx + len * Math.cos(ang), cy + len * Math.sin(ang));
+          ctx.stroke();
+        }
+      }
+
+      // 5. Star nodes
+      if (layers.has("star_nodes")) {
+        for (let i = 0; i < g.rings; i++) {
+          const frac = (i + 1) / (g.rings + 0.7);
+          const rr = R * (0.15 + 0.83 * frac);
+          for (let k = 0; k < g.symmetry; k++) {
+            const ang = (k / g.symmetry) * Math.PI * 2 + (rng() - 0.5) * 0.05;
+            const x = cx + rr * Math.cos(ang);
+            const y = cy + rr * Math.sin(ang);
+            const sz = 1.2 + rng() * 2.4;
+            
+            ctx.fillStyle = `rgb(${starCol[0]},${starCol[1]},${starCol[2]})`;
+            ctx.fillRect(x - sz, y - sz, sz * 2, sz * 2);
+            
+            // faint halo
+            ctx.fillStyle = `rgba(255,252,235,0.18)`;
+            ctx.fillRect(x - sz * 2.1, y - sz * 2.1, sz * 4.2, sz * 4.2);
+          }
+        }
+      }
+
+      // 6. Energy core
+      if (layers.has("logo_energy_overlay")) {
+        const coreR = R * 0.072;
+        for (let i = 5; i >= 1; i--) {
+          const rr = coreR * (i / 3.2);
+          ctx.fillStyle = `rgba(${energyCol[0]},${energyCol[1]},${energyCol[2]},${0.12 + i * 0.11})`;
+          ctx.beginPath();
+          ctx.arc(cx, cy, rr, 0, Math.PI * 2);
+          ctx.fill();
+        }
+        ctx.fillStyle = "#fffef0";
+        ctx.fillRect(cx - 1.5, cy - 1.5, 3, 3);
+      }
+
+      // Subtle vignette
+      const grad = ctx.createRadialGradient(cx, cy, R * 0.55, cx, cy, R * 1.05);
+      grad.addColorStop(0, "rgba(0,0,0,0)");
+      grad.addColorStop(1, "rgba(0,0,0,0.55)");
+      ctx.fillStyle = grad;
+      ctx.fillRect(0, 0, w, h);
+
+      ctx.restore();
+    }
+
+    // Seeded RNG (mulberry32) — matches Python determinism
+    function mulberry32(a) {
+      return function() {
+        a |= 0; a = a + 0x6D2B79F5 | 0;
+        let t = Math.imul(a ^ a >>> 15, 1 | a);
+        t = t + Math.imul(t ^ t >>> 7, 61 | t) | 0;
+        return ((t ^ t >>> 14) >>> 0) / 4294967296;
+      };
+    }
+
+    function hslToRgb(h, s, l) {
+      h = h % 360;
+      const c = (1 - Math.abs(2 * l - 1)) * s;
+      const x = c * (1 - Math.abs(((h / 60) % 2) - 1));
+      const m = l - c / 2;
+      let r, g, b;
+      if (h < 60) [r, g, b] = [c, x, 0];
+      else if (h < 120) [r, g, b] = [x, c, 0];
+      else if (h < 180) [r, g, b] = [0, c, x];
+      else if (h < 240) [r, g, b] = [0, x, c];
+      else if (h < 300) [r, g, b] = [x, 0, c];
+      else [r, g, b] = [c, 0, x];
+      return [Math.round((r + m) * 255), Math.round((g + m) * 255), Math.round((b + m) * 255)];
+    }
+
+    // ===== UI ↔ DIRECTIVE SYNC =====
+    function updateUIFromDirective(dir) {
+      // Geometry
+      document.getElementById('symmetry').value = dir.geometry.symmetry;
+      document.getElementById('rings').value = dir.geometry.rings;
+      document.getElementById('density').value = dir.geometry.petal_density;
+      document.getElementById('tension').value = dir.geometry.spiral_tension;
+      document.getElementById('energy').value = dir.geometry.energy_bias;
+      
+      // Color
+      document.getElementById('hue').value = dir.color.primary_hue;
+      document.getElementById('sat').value = dir.color.saturation;
+
+      // Values
+      syncValueBadges(dir);
+      
+      // Layers
+      renderLayerPills(dir);
+      
+      // JSON
+      renderDirectiveJSON(dir);
+    }
+
+    function syncValueBadges(dir) {
+      document.getElementById('sym-val').textContent = dir.geometry.symmetry;
+      document.getElementById('rings-val').textContent = dir.geometry.rings;
+      document.getElementById('density-val').textContent = dir.geometry.petal_density.toFixed(2);
+      document.getElementById('tension-val').textContent = dir.geometry.spiral_tension.toFixed(2);
+      document.getElementById('energy-val').textContent = dir.geometry.energy_bias.toFixed(2);
+      document.getElementById('hue-val').textContent = dir.color.primary_hue;
+      document.getElementById('sat-val').textContent = dir.color.saturation.toFixed(2);
+      document.getElementById('geometry-badge').innerHTML = `${dir.geometry.symmetry}-fold · ${dir.geometry.rings} rings`;
+    }
+
+    function renderLayerPills(dir) {
+      const container = document.getElementById('layer-pills');
+      container.innerHTML = '';
+      const allLayers = [
+        "base_cymatic_field", "mandala_skeleton", "filament_network",
+        "glow_veins", "star_nodes", "logo_energy_overlay"
+      ];
+      allLayers.forEach(layer => {
+        const active = dir.layers.includes(layer);
+        const pill = document.createElement('div');
+        pill.className = `layer-pill px-2.5 py-px cursor-pointer select-none ${active ? 'text-emerald-300 border-emerald-900/70' : 'text-zinc-500 opacity-60'}`;
+        pill.innerHTML = layer.replace(/_/g, ' ');
+        pill.onclick = () => {
+          if (active) {
+            dir.layers = dir.layers.filter(l => l !== layer);
+          } else {
+            dir.layers.push(layer);
+          }
+          renderLayerPills(dir);
+          redraw();
+          renderDirectiveJSON(dir);
+        };
+        container.appendChild(pill);
+      });
+    }
+
+    function updateDirectiveFromUI() {
+      if (!currentDirective) currentDirective = getDefaultDirective();
+      
+      const d = currentDirective;
+      d.geometry.symmetry = parseInt(document.getElementById('symmetry').value);
+      d.geometry.rings = parseInt(document.getElementById('rings').value);
+      d.geometry.petal_density = parseFloat(document.getElementById('density').value);
+      d.geometry.spiral_tension = parseFloat(document.getElementById('tension').value);
+      d.geometry.energy_bias = parseFloat(document.getElementById('energy').value);
+      
+      d.color.primary_hue = parseInt(document.getElementById('hue').value);
+      d.color.saturation = parseFloat(document.getElementById('sat').value);
+
+      syncValueBadges(d);
+      renderDirectiveJSON(d);
+      redraw();
+    }
+
+    function renderDirectiveJSON(dir) {
+      const el = document.getElementById('directive-json');
+      // pretty but compact
+      el.textContent = JSON.stringify(dir, null, 2);
+    }
+
+    function redraw() {
+      if (currentDirective) {
+        drawMandala(currentDirective);
+      }
+    }
+
+    // ===== AUDIO → DIRECTIVE =====
+    async function analyzeAudioAndUpdateDirective(fileOrBuffer) {
+      const status = document.getElementById('analysis-status');
+      status.style.display = 'flex';
+
+      try {
+        if (!audioContext) audioContext = new (window.AudioContext || window.webkitAudioContext)();
+
+        let arrayBuffer;
+        if (fileOrBuffer instanceof ArrayBuffer) {
+          arrayBuffer = fileOrBuffer;
+        } else {
+          arrayBuffer = await fileOrBuffer.arrayBuffer();
+        }
+
+        const decoded = await audioContext.decodeAudioData(arrayBuffer);
+        audioBuffer = decoded;
+
+        // Very lightweight client-side feature extraction (mirrors server-side spirit)
+        const channelData = decoded.getChannelData(0);
+        const duration = decoded.duration;
+        const rms = Math.sqrt(channelData.reduce((s, v) => s + v * v, 0) / channelData.length);
+        
+        // crude spectral centroid proxy
+        const fftSize = 2048;
+        const fft = new FFT(fftSize); // we'll use a tiny pure-js FFT below
+        // For simplicity we do a basic energy-weighted estimate
+        let centroid = 1100;
+        try {
+          const slice = channelData.slice(0, fftSize);
+          const spectrum = simpleSpectrum(slice);
+          let num = 0, den = 0;
+          for (let i = 0; i < spectrum.length; i++) {
+            num += i * spectrum[i];
+            den += spectrum[i];
+          }
+          if (den > 0) centroid = (num / den) * (decoded.sampleRate / 2 / spectrum.length);
+        } catch (e) { /* ignore */ }
+
+        const bpmGuess = 60 + Math.floor(rms * 110) + (centroid > 1600 ? 18 : 0);
+
+        // Build directive
+        const sha = await sha256(arrayBuffer);
+        const seed = parseInt(sha.slice(0, 8), 16) >>> 0;
+
+        currentDirective = getDefaultDirective();
+        currentDirective.source_audio = {
+          sha256: sha,
+          duration_s: Math.round(duration * 100) / 100,
+          bpm: Math.round(bpmGuess),
+          spectral_centroid: Math.round(centroid),
+          rms_energy: Math.round(rms * 1000) / 1000,
+          zero_crossing_rate: 0.04
+        };
+        currentDirective.seed = seed;
+        
+        // simple archetype mapping (same spirit as Python)
+        if (rms > 0.22 && centroid > 1700) {
+          currentDirective.archetype = { id: "plasma-storm-7", family: "fractal-storm", name: "Plasma Storm" };
+        } else if (bpmGuess > 138) {
+          currentDirective.archetype = { id: "thunder-lotus-11", family: "floral-cosmic", name: "Thunder Lotus" };
+        } else {
+          currentDirective.archetype = { id: "lotus-throne-13", family: "floral-cosmic", name: "Lotus Throne" };
+        }
+
+        // map to geometry
+        currentDirective.geometry.symmetry = Math.max(4, Math.min(16, Math.round(5 + rms * 11)));
+        currentDirective.geometry.rings = Math.max(7, Math.min(19, Math.round(7 + (bpmGuess - 70) / 9)));
+        currentDirective.geometry.petal_density = Math.round((0.9 + rms * 2.1) * 100) / 100;
+        currentDirective.geometry.energy_bias = Math.round((0.38 + rms * 0.85) * 100) / 100;
+        currentDirective.color.primary_hue = Math.round(((centroid / 9) + (seed % 60)) % 360);
+
+        document.getElementById('audio-name').textContent = fileOrBuffer.name || "live sample";
+        
+        updateUIFromDirective(currentDirective);
+        redraw();
+      } catch (err) {
+        console.error(err);
+        alert("Could not analyze audio: " + err.message);
+      } finally {
+        status.style.display = 'none';
+      }
+    }
+
+    // Tiny pure-JS FFT (real, for demo only — good enough for centroid)
+    function simpleSpectrum(samples) {
+      const n = samples.length;
+      const out = new Float32Array(n / 2);
+      for (let k = 0; k < n / 2; k++) {
+        let re = 0, im = 0;
+        for (let t = 0; t < n; t++) {
+          const ang = -2 * Math.PI * k * t / n;
+          re += samples[t] * Math.cos(ang);
+          im -= samples[t] * Math.sin(ang);
+        }
+        out[k] = Math.sqrt(re * re + im * im);
+      }
+      return out;
+    }
+
+    async function sha256(buffer) {
+      const hashBuffer = await crypto.subtle.digest('SHA-256', buffer);
+      return Array.from(new Uint8Array(hashBuffer)).map(b => b.toString(16).padStart(2, '0')).join('');
+    }
+
+    function handleAudioUpload(e) {
+      const file = e.target.files[0];
+      if (!file) return;
+      analyzeAudioAndUpdateDirective(file);
+    }
+
+    // Drag & drop support on the canvas
+    function setupDragDrop() {
+      const c = document.getElementById('mandala');
+      ['dragenter', 'dragover'].forEach(ev => c.addEventListener(ev, e => { e.preventDefault(); c.style.boxShadow = '0 0 0 3px rgb(167 139 250 / 0.3)'; }));
+      ['dragleave', 'drop'].forEach(ev => c.addEventListener(ev, e => { e.preventDefault(); c.style.boxShadow = ''; }));
+      
+      c.addEventListener('drop', async (e) => {
+        const file = e.dataTransfer.files[0];
+        if (file && file.type.startsWith('audio/')) {
+          document.getElementById('audio-name').textContent = file.name;
+          await analyzeAudioAndUpdateDirective(file);
+        }
+      });
+    }
+
+    function useSampleTone() {
+      // Generate a nice 3-second 110 Hz + overtones "singing bowl" style tone
+      const sampleRate = 44100;
+      const duration = 3.2;
+      const len = Math.floor(sampleRate * duration);
+      const buffer = new Float32Array(len);
+      const freq = 110;
+      
+      for (let i = 0; i < len; i++) {
+        const t = i / sampleRate;
+        let v = 0.6 * Math.sin(2 * Math.PI * freq * t);
+        v += 0.35 * Math.sin(2 * Math.PI * freq * 2.02 * t);
+        v += 0.18 * Math.sin(2 * Math.PI * freq * 3.01 * t + 0.4);
+        v *= (1 - Math.pow(t / duration, 1.6)) * 0.9; // nice decay
+        buffer[i] = v;
+      }
+      
+      // Fake a file-like object for the analyzer
+      const fakeFile = {
+        name: "singing-bowl-110hz",
+        arrayBuffer: async () => {
+          // Convert float to 16-bit PCM
+          const pcm = new Int16Array(buffer.length);
+          for (let i = 0; i < buffer.length; i++) {
+            pcm[i] = Math.max(-32768, Math.min(32767, buffer[i] * 32767));
+          }
+          return new Uint8Array(pcm.buffer).buffer;
+        }
+      };
+      
+      // We need to bypass the normal decode path slightly
+      (async () => {
+        const status = document.getElementById('analysis-status');
+        status.style.display = 'flex';
+        
+        if (!audioContext) audioContext = new (window.AudioContext || window.webkitAudioContext)();
+        
+        const audioBuf = audioContext.createBuffer(1, len, sampleRate);
+        audioBuf.getChannelData(0).set(buffer);
+        audioBuffer = audioBuf;
+        
+        // Build features manually
+        const rms = Math.sqrt(buffer.reduce((s, v) => s + v*v, 0) / len);
+        const sha = Array.from({length: 64}, (_,i) => (i % 16).toString(16)).join('');
+        const seed = 0xC0FFEE42;
+        
+        currentDirective = getDefaultDirective();
+        currentDirective.source_audio.sha256 = sha;
+        currentDirective.source_audio.duration_s = duration;
+        currentDirective.source_audio.bpm = 42;
+        currentDirective.source_audio.spectral_centroid = 420;
+        currentDirective.source_audio.rms_energy = Math.round(rms * 1000)/1000;
+        currentDirective.seed = seed;
+        currentDirective.archetype = {id:"deep-void-5", family:"void-geometry", name:"Singing Void"};
+        currentDirective.geometry.symmetry = 5;
+        currentDirective.geometry.rings = 9;
+        currentDirective.geometry.petal_density = 0.95;
+        currentDirective.geometry.energy_bias = 0.32;
+        currentDirective.color.primary_hue = 215;
+        currentDirective.color.saturation = 0.78;
+        
+        document.getElementById('audio-name').textContent = "singing-bowl-110hz (sample)";
+        
+        updateUIFromDirective(currentDirective);
+        redraw();
+        status.style.display = 'none';
+      })();
+    }
+
+    // ===== ACTIONS =====
+    function exportDirective() {
+      if (!currentDirective) return;
+      const blob = new Blob([JSON.stringify(currentDirective, null, 2)], {type: "application/json"});
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = (currentDirective.metadata?.title || "aurion-directive").replace(/\s+/g, "-") + "-v1.json";
+      a.click();
+      URL.revokeObjectURL(url);
+    }
+
+    async function copyDirectiveToClipboard() {
+      if (!currentDirective) return;
+      await navigator.clipboard.writeText(JSON.stringify(currentDirective, null, 2));
+      const orig = event.currentTarget?.innerHTML;
+      const btns = document.querySelectorAll('button');
+      // tiny toast
+      const toast = document.createElement('div');
+      toast.className = `fixed bottom-4 right-4 bg-emerald-900 text-emerald-200 text-xs px-4 py-2 rounded-2xl shadow flex items-center gap-2`;
+      toast.innerHTML = `<i class="fa-solid fa-check"></i> Directive copied to clipboard`;
+      document.body.appendChild(toast);
+      setTimeout(() => toast.remove(), 1600);
+    }
+
+    function sendToSangraha() {
+      if (!currentDirective) return;
+      const json = JSON.stringify(currentDirective, null, 2);
+      const msg = `Copy the directive below and run:\n\nsangraha forge --directive your-export.json --size 8192\n\n(Requires the Python package from the repo)`;
+      alert(msg + "\n\n" + json.slice(0, 420) + "...");
+    }
+
+    function randomizeDirective() {
+      currentDirective = getDefaultDirective();
+      const rng = mulberry32(Date.now() | 0);
+      
+      currentDirective.geometry.symmetry = 3 + Math.floor(rng() * 14);
+      currentDirective.geometry.rings = 5 + Math.floor(rng() * 17);
+      currentDirective.geometry.petal_density = 0.6 + rng() * 3.4;
+      currentDirective.geometry.spiral_tension = 0.35 + rng() * 1.05;
+      currentDirective.geometry.energy_bias = 0.2 + rng() * 0.7;
+      
+      currentDirective.color.primary_hue = Math.floor(rng() * 360);
+      currentDirective.color.saturation = 0.65 + rng() * 0.32;
+      
+      // random subset of layers (always keep core)
+      const possible = ["glow_veins", "star_nodes", "filament_network", "logo_energy_overlay"];
+      currentDirective.layers = ["base_cymatic_field", "mandala_skeleton"];
+      possible.forEach(l => { if (rng() > 0.25) currentDirective.layers.push(l); });
+      
+      currentDirective.seed = Math.floor(rng() * 0xffffffff) >>> 0;
+      
+      updateUIFromDirective(currentDirective);
+      redraw();
+    }
+
+    function resetToDefault() {
+      currentDirective = getDefaultDirective();
+      document.getElementById('audio-name').textContent = "No audio loaded";
+      updateUIFromDirective(currentDirective);
+      redraw();
+    }
+
+    // ===== INIT =====
+    function init() {
+      initTailwind();
+      
+      currentDirective = getDefaultDirective();
+      updateUIFromDirective(currentDirective);
+      drawMandala(currentDirective);
+      
+      // Live redraw when any slider moves (already wired via oninput)
+      // Also redraw on window resize for crispness (simple)
+      window.addEventListener('resize', () => {
+        // keep the canvas size we set in HTML; CSS handles scaling
+        redraw();
+      });
+      
+      setupDragDrop();
+      
+      // Keyboard niceties
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'r' && (e.metaKey || e.ctrlKey)) {
+          e.preventDefault();
+          randomizeDirective();
+        }
+        if (e.key.toLowerCase() === 'd' && e.shiftKey) {
+          e.preventDefault();
+          exportDirective();
+        }
+      });
+      
+      // Boot with a nice hint
+      setTimeout(() => {
+        const nameEl = document.getElementById('audio-name');
+        if (nameEl.textContent.includes("No audio")) {
+          nameEl.textContent = "Try the sample tone →";
+          nameEl.style.cursor = "pointer";
+          nameEl.onclick = () => {
+            useSampleTone();
+            nameEl.onclick = null;
+            nameEl.style.cursor = "";
+          };
+        }
+      }, 2200);
+      
+      // Make sure the canvas is interactive (click to slightly perturb)
+      canvas.addEventListener('click', (e) => {
+        if (!currentDirective) return;
+        const rect = canvas.getBoundingClientRect();
+        const x = ((e.clientX - rect.left) / rect.width - 0.5) * 2;
+        const y = ((e.clientY - rect.top) / rect.height - 0.5) * 2;
+        const energy = Math.min(0.95, Math.max(0.15, currentDirective.geometry.energy_bias + (x * 0.08)));
+        currentDirective.geometry.energy_bias = energy;
+        currentDirective.geometry.spiral_tension = Math.max(0.25, Math.min(1.45, currentDirective.geometry.spiral_tension + y * 0.09));
+        updateUIFromDirective(currentDirective);
+        redraw();
+      });
+      
+      console.log('%c[GrokMandala] Browser Lab ready — Aurion Directive v1 live', 'color:#64748b');
+    }
+
+    // Boot
+    window.onload = init;
+  </script>
+</body>
+</html>

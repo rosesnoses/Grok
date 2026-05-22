@@ -29,8 +29,7 @@ classifiers = [
 dependencies = [
   "Pillow>=10.0",
   "pydantic>=2.0",
-  "numpy>=1.24; python_version >= '3.11'",  # optional but recommended for analysis
-  "click>=8.1",
+  "numpy>=1.24",
 ]
 
 [project.optional-dependencies]
@@ -49,7 +48,7 @@ full = [
 ]
 
 [project.scripts]
-sangraha = "sangraha.cli:main"
+sangraha = "sangraha.sangraha:main"
 
 [project.urls]
 Homepage = "https://github.com/Rosesnoses/grokmandala"

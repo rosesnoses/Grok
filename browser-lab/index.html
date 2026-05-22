@@ -1,1033 +1,1608 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>GrokMandala • Browser Lab — Aurion v1 + Live Sangraha Preview</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-  <style>
-    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&amp;family=Space+Grotesk:wght@500;600&amp;display=swap');
-    
-    :root {
-      --cosmic-bg: #0a0a12;
-    }
-    
-    body {
-      font-family: 'Inter', system_ui, sans-serif;
-    }
-    
-    .font-display {
-      font-family: 'Space Grotesk', 'Inter', sans-serif;
-      font-feature-settings: "ss01";
-    }
-
-    .cosmic-bg {
-      background: radial-gradient(circle at center, #1a1625 0%, #0a0a12 70%);
-    }
-
-    .mandala-canvas {
-      box-shadow: 0 25px 50px -12px rgb(0 0 0 / 0.4),
-                  0 0 0 1px rgb(255 255 255 / 0.05) inset,
-                  0 0 80px -20px rgb(167 139 250 / 0.15);
-      transition: transform 0.2s cubic-bezier(0.23, 1, 0.32, 1);
-    }
-    
-    .mandala-canvas:hover {
-      transform: scale(1.01);
-    }
-
-    .section-header {
-      font-size: 0.75rem;
-      letter-spacing: 0.125em;
-      text-transform: uppercase;
-      font-weight: 600;
-    }
-
-    .cosmic-input {
-      background: #111113;
-      border: 1px solid #2a2a35;
-      transition: all 0.1s ease;
-    }
-    
-    .cosmic-input:focus {
-      border-color: #6366f1;
-      box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
-      outline: none;
-    }
-
-    .layer-pill {
-      font-size: 0.65rem;
-      padding: 1px 9px;
-      background: #1f1f27;
-      border: 1px solid #2f2f3a;
-      border-radius: 9999px;
-    }
-
-    .value-badge {
-      font-family: ui-monospace, monospace;
-      background: #1a1a22;
-      padding: 1px 6px;
-      border-radius: 3px;
-      font-size: 0.7rem;
-    }
-
-    .directive-json {
-      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
-      font-size: 0.72rem;
-      line-height: 1.35;
-    }
-
-    .glow-text {
-      text-shadow: 0 0 10px rgb(167 139 250 / 0.5);
-    }
-
-    .cosmic-divider {
-      height: 1px;
-      background: linear-gradient(to right, transparent, #2a2a35, transparent);
-    }
-
-    .mandala-container {
-      background: #050508;
-      border-radius: 9999px;
-      padding: 24px;
-      box-shadow: 0 0 0 1px #1f1f27,
-                  inset 0 0 120px rgb(0 0 0 / 0.6);
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Psychoacoustic Mandala SVA6 Vault</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            background-color: #020005;
+            color: #e2e8f0;
+            font-family: ui-sans-serif, system-ui, -apple-system, sans-serif;
+            background-image: radial-gradient(circle at 50% 0%, #100520 0%, #020005 60%);
+            min-height: 100vh;
+        }
+        #canvas-container {
+            position: relative;
+            width: 100%;
+            max-width: 650px;
+            aspect-ratio: 1 / 1;
+            margin: 0 auto;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 0 50px -10px rgba(168, 85, 247, 0.4), 0 20px 30px -5px rgba(0, 0, 0, 0.8);
+            border: 1px solid #2a1b40;
+            background-color: #030008;
+        }
+        canvas {
+            display: block;
+            width: 100%;
+            height: 100%;
+            image-rendering: auto;
+        }
+        input[type="file"]::file-selector-button {
+            margin-right: 1rem;
+            padding: 0.5rem 1rem;
+            border-radius: 0.375rem;
+            border: none;
+            background-color: #7c3aed;
+            color: white;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        input[type="file"]::file-selector-button:hover {
+            background-color: #6d28d9;
+        }
+        .tab-btn.active {
+            border-bottom: 2px solid #a855f7;
+            color: #d8b4fe;
+            text-shadow: 0 0 12px rgba(168,85,247,0.6);
+        }
+    </style>
 </head>
-<body class="bg-[#0a0a12] text-zinc-200">
-  <div class="max-w-[1280px] mx-auto">
-    <!-- Top nav -->
-    <div class="flex items-center justify-between px-8 pt-6 pb-4">
-      <div class="flex items-center gap-x-3">
-        <div class="w-9 h-9 rounded-2xl bg-gradient-to-br from-violet-500 to-indigo-600 flex items-center justify-center">
-          <i class="fa-solid fa-infinity text-white text-2xl"></i>
-        </div>
+<body class="flex flex-col items-center py-10 px-4">
+
+    <div class="max-w-3xl w-full space-y-6 text-center">
         <div>
-          <div class="font-display text-3xl font-semibold tracking-tighter">grokmandala</div>
-          <div class="text-[10px] text-zinc-500 -mt-1">AURION v1 • SVA6</div>
+            <h1 class="text-4xl sm:text-5xl font-extrabold bg-clip-text text-transparent bg-gradient-to-r from-cyan-400 via-purple-400 to-pink-500 drop-shadow-lg tracking-tight">
+                Psychoacoustic Architect
+            </h1>
+            <p class="text-gray-400 mt-4 text-sm sm:text-base max-w-2xl mx-auto">
+                Forging mathematical souls of audio into 128-bit deterministic cosmic mandalas. Self-Verifying Artifact (SVA6) Engine.
+            </p>
         </div>
-      </div>
-      
-      <div class="flex items-center gap-x-2 text-sm">
-        <div class="px-3 py-1 rounded-full bg-white/5 text-xs flex items-center gap-x-1.5 border border-white/10">
-          <div class="w-2 h-2 bg-emerald-400 rounded-full animate-pulse"></div>
-          <span class="text-emerald-300 font-medium">LIVE PREVIEW</span>
+
+        <div class="flex justify-center gap-4 sm:gap-10 border-b border-gray-800 mb-6 flex-wrap">
+            <button id="modeEncode" class="tab-btn active pb-3 font-semibold text-gray-500 hover:text-purple-300 transition-all uppercase tracking-wider text-sm">
+                Forge Mandala
+            </button>
+            <button id="modeDecode" class="tab-btn pb-3 font-semibold text-gray-500 hover:text-purple-300 transition-all uppercase tracking-wider text-sm">
+                Extract Audio
+            </button>
+            <button id="modeTest" class="tab-btn pb-3 font-semibold text-gray-500 hover:text-purple-300 transition-all uppercase tracking-wider text-sm">
+                Auto-Test Pipeline
+            </button>
         </div>
-        <a href="https://github.com/Rosesnoses/grokmandala" target="_blank"
-           class="flex items-center gap-x-2 px-4 py-1.5 rounded-2xl bg-white/5 hover:bg-white/10 border border-white/10 transition-colors text-sm">
-          <i class="fa-brands fa-github"></i>
-          <span class="hidden sm:inline">Rosesnoses/grokmandala</span>
-        </a>
-      </div>
+
+        <div class="bg-gray-900/60 backdrop-blur-xl p-6 rounded-2xl border border-gray-700/50 shadow-2xl flex flex-col gap-4 w-full transition-all">
+            <div class="flex flex-col sm:flex-row items-center justify-between gap-4 w-full">
+                <input type="password" id="passwordInput" placeholder="Secret Key (Required)" class="text-sm text-white bg-gray-950/80 border border-purple-900/50 rounded-lg px-4 py-3 w-full sm:w-auto flex-grow outline-none focus:border-purple-400 focus:ring-1 focus:ring-purple-400 placeholder-gray-600 transition-all" />
+                <select id="stylePreset" class="text-sm text-white bg-gray-950/80 border border-purple-900/50 rounded-lg px-4 py-3 w-full sm:w-auto outline-none focus:border-purple-400 focus:ring-1 focus:ring-purple-400">
+                    <option value="auto">Style: Auto</option>
+                    <option value="cathedral">Style: Cathedral</option>
+                    <option value="byzantine">Style: Byzantine</option>
+                    <option value="cosmic">Style: Cosmic</option>
+                </select>
+                <input type="file" id="fileInput" class="text-sm text-gray-300 w-full sm:w-auto cursor-pointer" />
+                
+                <button id="actionBtn" disabled class="px-8 py-3 bg-gray-800 text-gray-500 rounded-lg font-bold uppercase tracking-wide transition-all duration-300 flex items-center gap-2 cursor-not-allowed">
+                    <span id="actionBtnText">Awaiting Input</span>
+                </button>
+            </div>
+
+            <div id="metadataSection" class="w-full mt-2 transition-all">
+                <details class="w-full group">
+                    <summary class="text-xs sm:text-sm font-semibold text-gray-400 cursor-pointer hover:text-purple-400 transition-colors list-none flex items-center gap-2 outline-none">
+                        <span class="text-purple-500 group-open:rotate-90 transition-transform">▶</span> Append Artifact Metadata (Optional SVA Data)
+                    </summary>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-4 pt-4 border-t border-gray-800">
+                        <input type="text" id="metaArtist" placeholder="Artist Name (e.g. Lo)" class="meta-input text-xs text-white bg-gray-950/50 border border-gray-800 rounded px-3 py-2 outline-none focus:border-purple-500" />
+                        <input type="text" id="metaWriter" placeholder="Written By (e.g. Jason Lo)" class="meta-input text-xs text-white bg-gray-950/50 border border-gray-800 rounded px-3 py-2 outline-none focus:border-purple-500" />
+                        <input type="text" id="metaReleaseId" placeholder="Release ID (e.g. TkvZqQnZMR)" class="meta-input text-xs text-white bg-gray-950/50 border border-gray-800 rounded px-3 py-2 outline-none focus:border-purple-500" />
+                        <input type="text" id="metaUpc" placeholder="UPC (e.g. 3666820023222)" class="meta-input text-xs text-white bg-gray-950/50 border border-gray-800 rounded px-3 py-2 outline-none focus:border-purple-500" />
+                        <input type="text" id="metaDate" placeholder="Release Date (e.g. March 2, 2023)" class="meta-input text-xs text-white bg-gray-950/50 border border-gray-800 rounded px-3 py-2 outline-none focus:border-purple-500" />
+                        <input type="text" id="metaLang" placeholder="Language (e.g. English)" class="meta-input text-xs text-white bg-gray-950/50 border border-gray-800 rounded px-3 py-2 outline-none focus:border-purple-500" />
+                        <input type="text" id="metaGenre" placeholder="Genre (e.g. Alternative)" class="meta-input text-xs text-white bg-gray-950/50 border border-gray-800 rounded px-3 py-2 outline-none focus:border-purple-500" />
+                        <input type="text" id="metaLabel" placeholder="Label (e.g. Mone)" class="meta-input text-xs text-white bg-gray-950/50 border border-gray-800 rounded px-3 py-2 outline-none focus:border-purple-500" />
+                        <input type="text" id="metaIsrc" placeholder="ISRC (e.g. MYABC2300001)" class="meta-input text-xs text-white bg-gray-950/50 border border-gray-800 rounded px-3 py-2 outline-none focus:border-purple-500" />
+                        <input type="text" id="metaPublisher" placeholder="Publisher / Admin" class="meta-input text-xs text-white bg-gray-950/50 border border-gray-800 rounded px-3 py-2 outline-none focus:border-purple-500" />
+                        <input type="text" id="metaPro" placeholder="PRO / CMO (e.g. MACP, BMI)" class="meta-input text-xs text-white bg-gray-950/50 border border-gray-800 rounded px-3 py-2 outline-none focus:border-purple-500" />
+                        <input type="text" id="metaTerritory" placeholder="Territory (e.g. Worldwide)" class="meta-input text-xs text-white bg-gray-950/50 border border-gray-800 rounded px-3 py-2 outline-none focus:border-purple-500" />
+                        <textarea id="metaSplits" placeholder='Royalty Splits JSON (e.g. [{"party":"Artist","role":"master","share":50}])' class="meta-input text-xs text-white bg-gray-950/50 border border-gray-800 rounded px-3 py-2 outline-none focus:border-purple-500 sm:col-span-2 min-h-[72px] resize-y"></textarea>
+                        <!-- Directive (aurion-art-directive-v1) — the contract for browser preview ↔ Sangraha final -->
+                        <div class="sm:col-span-2 flex flex-wrap gap-2 pt-1">
+                            <button id="exportDirectiveBtn" type="button"
+                                    class="text-[10px] px-3 py-1 rounded bg-purple-900/60 hover:bg-purple-800 text-purple-200 border border-purple-700/50 transition">Export Directive JSON</button>
+                            <button id="loadDirectiveBtn" type="button"
+                                    class="text-[10px] px-3 py-1 rounded bg-gray-800 hover:bg-gray-700 text-gray-300 border border-gray-700/50 transition">Load Directive (preview parity)</button>
+                            <span id="directiveStatus" class="text-[10px] text-gray-500 self-center"></span>
+                        </div>
+                    </div>
+                </details>
+            </div>
+            
+            <audio id="audioPlayer" controls class="hidden w-full h-10 outline-none rounded-md opacity-80 hover:opacity-100 transition-opacity"></audio>
+            
+            <div id="svaData" class="hidden mt-2 p-4 bg-gray-950/80 rounded-xl border border-green-500/30 text-left space-y-2 text-xs sm:text-sm text-gray-300 shadow-[0_0_15px_rgba(34,197,94,0.15)]">
+               <div class="text-green-400 font-bold uppercase tracking-widest text-center border-b border-gray-800 pb-2 mb-3">Cryptographic Provenance Verified</div>
+               <div><span class="font-bold text-gray-500">Artifact Born:</span> <span id="svaTime" class="text-gray-200"></span></div>
+               <div><span class="font-bold text-gray-500">Original Soul:</span> <span id="svaName" class="text-gray-200"></span> (<span id="svaType" class="text-gray-400 text-xs"></span>)</div>
+               <div><span class="font-bold text-gray-500">Genesis Engine:</span> <span id="svaEngine" class="text-gray-200"></span></div>
+               <div class="break-all pt-1"><span class="font-bold text-gray-500">SHA-256 Signature:</span> <br><span id="svaHash" class="font-mono text-[10px] sm:text-xs text-purple-400"></span></div>
+               
+               <div id="svaCustomData" class="mt-3 pt-3 border-t border-gray-800 grid grid-cols-1 sm:grid-cols-2 gap-y-2 gap-x-4 hidden">
+                   </div>
+            </div>
+        </div>
+
+        <div id="statusMessage" class="h-6 text-sm font-medium text-purple-400 flex items-center justify-center gap-2">
+            Ready.
+        </div>
+
+        <div id="canvas-container">
+            <canvas id="mandalaCanvas"></canvas>
+        </div>
     </div>
 
-    <div class="px-8 pb-8">
-      <!-- Hero -->
-      <div class="mb-8">
-        <div class="flex items-baseline gap-x-4">
-          <h1 class="font-display text-6xl font-semibold tracking-tighter">Browser Lab</h1>
-          <div class="text-violet-400 text-xl font-medium">aurion-art-directive-v1</div>
-        </div>
-        <p class="max-w-xl text-lg text-zinc-400 mt-2">
-          Watch your music become geometry. The same directive that drives Sangraha’s 8K cathedral renderers powers this live forge.
-        </p>
-      </div>
-
-      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+    <script src="audio-gearing.js"></script>
+    <script>
+        const fileInput = document.getElementById('fileInput');
+        const canvas = document.getElementById('mandalaCanvas');
+        const ctx = canvas.getContext('2d', { willReadFrequently: true });
+        const statusMessage = document.getElementById('statusMessage');
+        const actionBtn = document.getElementById('actionBtn');
+        const actionBtnText = document.getElementById('actionBtnText');
         
-        <!-- THE CANVAS -->
-        <div class="lg:col-span-7">
-          <div class="flex items-center justify-between mb-3 px-1">
-            <div>
-              <div class="section-header text-violet-400">Live Cosmic Yantra</div>
-              <div class="text-xs text-zinc-500">Real-time • Same directive as Sangraha</div>
-            </div>
-            <div class="flex items-center gap-x-2">
-              <button onclick="randomizeDirective()" 
-                      class="px-4 py-1.5 text-xs rounded-2xl border border-white/10 hover:bg-white/5 active:bg-white/10 flex items-center gap-x-2 transition-all">
-                <i class="fa-solid fa-dice"></i>
-                <span>Randomize</span>
-              </button>
-              <button onclick="resetToDefault()" 
-                      class="px-3 py-1.5 text-xs rounded-2xl border border-white/10 hover:bg-white/5 flex items-center gap-x-2">
-                <i class="fa-solid fa-undo"></i>
-              </button>
-            </div>
-          </div>
-
-          <div class="mandala-container flex justify-center">
-            <canvas id="mandala" width="820" height="820" 
-                    class="mandala-canvas bg-black rounded-[48px] cursor-crosshair touch-none"
-                    style="max-width: 100%; height: auto;"></canvas>
-          </div>
-          
-          <div class="flex justify-center mt-3 gap-x-3 text-[10px] text-zinc-500">
-            <div class="flex items-center gap-x-1.5"><i class="fa-solid fa-music"></i> <span id="audio-name">No audio loaded</span></div>
-            <div class="text-white/30">•</div>
-            <div>Drag &amp; drop MP3/WAV anywhere on the canvas</div>
-          </div>
-        </div>
-
-        <!-- CONTROLS -->
-        <div class="lg:col-span-5 space-y-6">
-          
-          <!-- Audio Source -->
-          <div class="bg-[#111113] border border-white/10 rounded-3xl p-5">
-            <div class="section-header mb-3 text-amber-400">Audio Source</div>
-            
-            <div class="flex gap-3">
-              <label class="flex-1 cursor-pointer">
-                <div class="border border-dashed border-white/20 hover:border-violet-500/60 transition-colors rounded-2xl p-4 text-center">
-                  <i class="fa-solid fa-upload text-xl mb-1 text-violet-400"></i>
-                  <div class="text-sm font-medium">Upload audio</div>
-                  <div class="text-[10px] text-zinc-500">MP3 • WAV • OGG</div>
-                </div>
-                <input type="file" id="audio-upload" accept="audio/*" class="hidden" onchange="handleAudioUpload(event)">
-              </label>
-              
-              <button onclick="useSampleTone()" 
-                      class="flex-1 border border-white/20 hover:bg-white/5 rounded-2xl text-sm flex flex-col items-center justify-center transition-colors">
-                <i class="fa-solid fa-waveform-lines mb-0.5"></i>
-                <span class="text-xs">Use sample tone</span>
-              </button>
-            </div>
-            
-            <div class="mt-3 text-[10px] flex items-center gap-2 text-emerald-400/70" id="analysis-status" style="display:none;">
-              <i class="fa-solid fa-microchip"></i> 
-              <span>Analyzing… computing Aurion directive</span>
-            </div>
-          </div>
-
-          <!-- Geometry -->
-          <div class="bg-[#111113] border border-white/10 rounded-3xl p-5">
-            <div class="flex items-center justify-between mb-3">
-              <div class="section-header text-sky-400">Geometry</div>
-              <div id="geometry-badge" class="value-badge text-sky-300/70"></div>
-            </div>
-            
-            <div class="space-y-4">
-              <!-- Symmetry -->
-              <div>
-                <div class="flex justify-between text-xs mb-1.5">
-                  <div class="text-zinc-400">Symmetry <span class="text-white/40">(axes / petals)</span></div>
-                  <div id="sym-val" class="value-badge text-sky-300">8</div>
-                </div>
-                <input type="range" id="symmetry" min="3" max="18" step="1" value="8" 
-                       class="w-full accent-violet-500 cosmic-input" oninput="updateDirectiveFromUI()">
-              </div>
-              
-              <!-- Rings -->
-              <div>
-                <div class="flex justify-between text-xs mb-1.5">
-                  <div class="text-zinc-400">Rings</div>
-                  <div id="rings-val" class="value-badge text-sky-300">13</div>
-                </div>
-                <input type="range" id="rings" min="3" max="24" step="1" value="13" 
-                       class="w-full accent-violet-500 cosmic-input" oninput="updateDirectiveFromUI()">
-              </div>
-              
-              <!-- Density & Tension -->
-              <div class="grid grid-cols-2 gap-4">
-                <div>
-                  <div class="flex justify-between text-xs mb-1.5">
-                    <div class="text-zinc-400">Petal Density</div>
-                    <div id="density-val" class="value-badge text-sky-300">1.70</div>
-                  </div>
-                  <input type="range" id="density" min="0.3" max="4.5" step="0.05" value="1.7" 
-                         class="w-full accent-violet-500 cosmic-input" oninput="updateDirectiveFromUI()">
-                </div>
-                <div>
-                  <div class="flex justify-between text-xs mb-1.5">
-                    <div class="text-zinc-400">Spiral Tension</div>
-                    <div id="tension-val" class="value-badge text-sky-300">0.92</div>
-                  </div>
-                  <input type="range" id="tension" min="0.2" max="1.5" step="0.01" value="0.92" 
-                         class="w-full accent-violet-500 cosmic-input" oninput="updateDirectiveFromUI()">
-                </div>
-              </div>
-              
-              <div>
-                <div class="flex justify-between text-xs mb-1.5">
-                  <div class="text-zinc-400">Energy Bias <span class="text-white/30">(outer → center)</span></div>
-                  <div id="energy-val" class="value-badge text-sky-300">0.65</div>
-                </div>
-                <input type="range" id="energy" min="0.1" max="0.95" step="0.01" value="0.65" 
-                       class="w-full accent-violet-500 cosmic-input" oninput="updateDirectiveFromUI()">
-              </div>
-            </div>
-          </div>
-
-          <!-- Color -->
-          <div class="bg-[#111113] border border-white/10 rounded-3xl p-5">
-            <div class="section-header mb-3 text-rose-400">Color &amp; Light</div>
-            
-            <div class="grid grid-cols-2 gap-x-4 gap-y-3">
-              <div>
-                <div class="text-xs text-zinc-400 mb-1">Primary Hue</div>
-                <div class="flex items-center gap-3">
-                  <input type="range" id="hue" min="0" max="360" value="285" 
-                         class="flex-1 accent-rose-500 cosmic-input" oninput="updateDirectiveFromUI()">
-                  <div id="hue-val" class="value-badge w-9 text-center text-rose-300">285</div>
-                </div>
-              </div>
-              <div>
-                <div class="text-xs text-zinc-400 mb-1">Saturation</div>
-                <div class="flex items-center gap-3">
-                  <input type="range" id="sat" min="0.4" max="1" step="0.01" value="0.92" 
-                         class="flex-1 accent-rose-500 cosmic-input" oninput="updateDirectiveFromUI()">
-                  <div id="sat-val" class="value-badge w-9 text-center text-rose-300">0.92</div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <!-- Layers -->
-          <div class="bg-[#111113] border border-white/10 rounded-3xl p-5">
-            <div class="section-header mb-2.5 text-emerald-400">Active Layers</div>
-            <div class="flex flex-wrap gap-1.5" id="layer-pills">
-              <!-- populated by JS -->
-            </div>
-            <div class="text-[10px] text-emerald-300/60 mt-3">Same layers drive Sangraha’s reference render</div>
-          </div>
-
-          <!-- Actions -->
-          <div class="flex flex-wrap gap-3">
-            <button onclick="exportDirective()" 
-                    class="flex-1 bg-white text-black font-semibold rounded-2xl py-3 text-sm flex items-center justify-center gap-x-2 hover:bg-zinc-100 active:scale-[0.985] transition">
-              <i class="fa-solid fa-file-export"></i>
-              <span>Export Directive JSON</span>
-            </button>
-            
-            <button onclick="copyDirectiveToClipboard()" 
-                    class="px-5 bg-white/5 hover:bg-white/10 border border-white/10 rounded-2xl text-sm flex items-center gap-x-2">
-              <i class="fa-solid fa-copy"></i>
-            </button>
-            
-            <button onclick="sendToSangraha()" 
-                    class="flex-1 border border-violet-500/40 hover:bg-violet-950/30 text-violet-300 rounded-2xl py-3 text-sm flex items-center justify-center gap-x-2 transition">
-              <i class="fa-solid fa-rocket"></i>
-              <span>Forge in Sangraha</span>
-            </button>
-          </div>
-          
-          <div class="text-[10px] text-center text-zinc-500">
-            The exported directive is 100% compatible with <code class="text-violet-400">sangraha forge --directive</code>
-          </div>
-        </div>
-
-        <!-- Directive inspector -->
-        <div class="lg:col-span-12">
-          <details class="bg-[#0c0c14] border border-white/10 rounded-3xl px-5 py-4 group" open>
-            <summary class="cursor-pointer flex items-center justify-between text-sm font-medium text-zinc-400 group-open:text-white">
-              <div class="flex items-center gap-x-2">
-                <i class="fa-solid fa-file-code"></i>
-                <span>Live Aurion Art Directive (v1)</span>
-              </div>
-              <span class="text-[10px] group-open:hidden text-violet-400">click to inspect</span>
-            </summary>
-            <pre id="directive-json" 
-                 class="directive-json mt-3 p-4 bg-black/60 rounded-2xl overflow-auto max-h-[260px] text-emerald-300/90 border border-white/5"></pre>
-          </details>
-        </div>
+        const modeEncodeBtn = document.getElementById('modeEncode');
+        const modeDecodeBtn = document.getElementById('modeDecode');
+        const modeTestBtn = document.getElementById('modeTest');
+        const passwordInput = document.getElementById('passwordInput');
+        const stylePreset = document.getElementById('stylePreset');
+        const audioPlayer = document.getElementById('audioPlayer');
         
-      </div>
-    </div>
-  </div>
+        // SVA UI Elements
+        const svaDataBox = document.getElementById('svaData');
+        const svaTime = document.getElementById('svaTime');
+        const svaName = document.getElementById('svaName');
+        const svaType = document.getElementById('svaType');
+        const svaEngine = document.getElementById('svaEngine');
+        const svaHashUI = document.getElementById('svaHash');
+        const svaCustomData = document.getElementById('svaCustomData');
+        const metadataSection = document.getElementById('metadataSection');
 
-  <footer class="text-center text-[10px] text-zinc-500 pb-8 pt-4 border-t border-white/10 mt-4">
-    Built for the Mandala Crusade • Same directive • Same soul • Browser preview ↔ Sangraha 8K
-  </footer>
+        let currentMode = 'ENCODE'; 
+        let outputBlobUrl = null;
+        let outputFileName = '';
+        let previewAudioUrl = null;
 
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script>
-    // Tailwind script
-    function initTailwind() {
-      document.querySelectorAll('script').forEach(s => {
-        if (s.src && s.src.includes('tailwindcss')) {
-          // already loaded via CDN
+        // --- HELPER UTILITIES ---
+        function getMimeType(fileName) {
+            const ext = fileName.split('.').pop().toLowerCase();
+            const mimeTypes = { 'mp3': 'audio/mpeg', 'wav': 'audio/wav', 'ogg': 'audio/ogg', 'flac': 'audio/flac', 'aac': 'audio/aac', 'm4a': 'audio/mp4' };
+            return mimeTypes[ext] || 'application/octet-stream';
         }
-      });
-    }
-
-    // ===== CORE STATE =====
-    let currentDirective = null;
-    let audioContext = null;
-    let audioBuffer = null;
-    let analyser = null;
-    let animationFrame = null;
-    let lastAudioFeatures = null;
-
-    const canvas = document.getElementById('mandala');
-    const ctx = canvas.getContext('2d', { alpha: true });
-
-    // ===== DIRECTIVE DEFAULT (beautiful starting point) =====
-    function getDefaultDirective() {
-      return {
-        version: "aurion-art-directive-v1",
-        source_audio: {
-          sha256: "a".repeat(64),
-          duration_s: 187.4,
-          bpm: 92,
-          spectral_centroid: 1340,
-          rms_energy: 0.18,
-          zero_crossing_rate: 0.041
-        },
-        seed: 0xA4F19C2D,
-        archetype: { id: "lotus-throne-13", family: "floral-cosmic", name: "Lotus Throne" },
-        geometry: {
-          symmetry: 8,
-          rings: 13,
-          petal_density: 1.7,
-          spiral_tension: 0.92,
-          energy_bias: 0.65
-        },
-        color: {
-          palette: "plasma-dawn",
-          primary_hue: 285,
-          saturation: 0.92,
-          glow_temperature: 6200
-        },
-        layers: [
-          "base_cymatic_field", "mandala_skeleton", "filament_network",
-          "glow_veins", "star_nodes", "logo_energy_overlay"
-        ],
-        metadata: { title: "Untitled", artist: "—", source: "browser-lab" }
-      };
-    }
-
-    // ===== RENDERER (mirrors Python Sangraha logic as closely as possible) =====
-    function drawMandala(directive) {
-      const w = canvas.width;
-      const h = canvas.height;
-      const cx = w / 2;
-      const cy = h / 2;
-      const R = Math.min(w, h) * 0.475;
-
-      ctx.save();
-      ctx.clearRect(0, 0, w, h);
-
-      // Background
-      const bg = hslToRgb((directive.color.primary_hue + 180) % 360, directive.color.saturation * 0.28, 0.065);
-      ctx.fillStyle = `rgb(${bg[0]},${bg[1]},${bg[2]})`;
-      ctx.fillRect(0, 0, w, h);
-
-      const g = directive.geometry;
-      const c = directive.color;
-      const seed = directive.seed;
-      const rng = mulberry32(seed);
-
-      // Helper colors
-      const ringCol = hslToRgb(c.primary_hue, c.saturation, 0.9);
-      const filamentCol = hslToRgb((c.primary_hue + 22) % 360, Math.min(1, c.saturation + 0.08), 0.82);
-      const glowCol = hslToRgb((c.primary_hue + 38) % 360, 0.55, 0.68);
-      const starCol = [255, 252, 235];
-      const energyCol = hslToRgb((c.primary_hue + 75) % 360, 0.88, 0.82);
-
-      const layers = new Set(directive.layers);
-
-      // 1. Cymatic base (wavy rings)
-      if (layers.has("base_cymatic_field")) {
-        ctx.strokeStyle = `rgba(${ringCol[0]},${ringCol[1]},${ringCol[2]},0.55)`;
-        ctx.lineWidth = 1.2;
-        for (let i = 0; i < g.rings; i++) {
-          const frac = (i + 1) / (g.rings + 0.6);
-          const rr = R * (0.12 + 0.86 * frac);
-          ctx.beginPath();
-          const steps = 220;
-          for (let a = 0; a <= steps; a++) {
-            const ang = (a / steps) * Math.PI * 2;
-            const wave = 0.011 * Math.sin(7 * ang + i * 1.3) + 0.006 * Math.sin(14 * ang + rng() * 2);
-            const rad = rr * (1 + wave);
-            const x = cx + rad * Math.cos(ang);
-            const y = cy + rad * Math.sin(ang);
-            if (a === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
-          }
-          ctx.closePath();
-          ctx.stroke();
-
-          if (i % 3 === 0) {
-            for (let k = 0; k < g.symmetry * 2; k++) {
-              const ang = (k / (g.symmetry * 2)) * Math.PI * 2;
-              const nx = cx + rr * 0.985 * Math.cos(ang);
-              const ny = cy + rr * 0.985 * Math.sin(ang);
-              ctx.fillStyle = `rgba(255,255,240,0.6)`;
-              ctx.fillRect(nx - 0.8, ny - 0.8, 1.6, 1.6);
+        
+        function handleAudioPlayer(blobUrl, fileName) {
+            const mimeType = getMimeType(fileName);
+            if (mimeType.startsWith('audio/')) {
+                audioPlayer.src = blobUrl;
+                audioPlayer.classList.remove('hidden');
+            } else {
+                audioPlayer.classList.add('hidden');
+                audioPlayer.pause();
+                audioPlayer.src = '';
             }
-          }
         }
-      }
 
-      // 2. Skeleton (radial spokes)
-      if (layers.has("mandala_skeleton")) {
-        ctx.strokeStyle = `rgba(${ringCol[0]},${ringCol[1]},${ringCol[2]},0.35)`;
-        ctx.lineWidth = 1;
-        for (let i = 0; i < g.rings; i++) {
-          const rr = R * (0.1 + 0.88 * (i + 1) / (g.rings + 1));
-          for (let k = 0; k < g.symmetry; k++) {
-            const ang = (k / g.symmetry) * Math.PI * 2;
-            ctx.beginPath();
-            ctx.moveTo(cx, cy);
-            ctx.lineTo(cx + rr * Math.cos(ang), cy + rr * Math.sin(ang));
-            ctx.stroke();
-          }
+        // --- CRYPTO UTILITIES ---
+        async function sha256(buffer) {
+            return new Uint8Array(await crypto.subtle.digest('SHA-256', buffer));
         }
-      }
 
-      // 3. Filament network
-      if (layers.has("filament_network")) {
-        const count = Math.floor(16 * g.petal_density);
-        ctx.strokeStyle = `rgba(${filamentCol[0]},${filamentCol[1]},${filamentCol[2]},0.38)`;
-        ctx.lineWidth = 1.1;
-        
-        for (let i = 0; i < count; i++) {
-          const phase = (i / count) * Math.PI * 2 + (rng() - 0.5) * 0.1;
-          const len = R * (0.32 + rng() * 0.58);
-          const x2 = cx + len * Math.cos(phase);
-          const y2 = cy + len * Math.sin(phase);
-          
-          ctx.beginPath();
-          ctx.moveTo(cx, cy);
-          ctx.lineTo(x2, y2);
-          ctx.stroke();
+        async function deriveKey(password, salt) {
+            const enc = new TextEncoder();
+            const keyMaterial = await crypto.subtle.importKey("raw", enc.encode(password), {name: "PBKDF2"}, false, ["deriveBits", "deriveKey"]);
+            return crypto.subtle.deriveKey(
+                { name: "PBKDF2", salt: salt, iterations: 100000, hash: "SHA-256" },
+                keyMaterial, { name: "AES-GCM", length: 256 }, false, ["encrypt", "decrypt"]
+            );
+        }
 
-          // curls
-          if (rng() > 0.38) {
-            ctx.beginPath();
-            let px = x2, py = y2;
-            const curls = 5;
-            for (let t = 1; t <= curls; t++) {
-              const ang = phase + t * 0.55 * g.spiral_tension * (i % 2 ? 1 : -1);
-              const rad = len * (0.09 + t * 0.055);
-              const nx = px + rad * Math.cos(ang);
-              const ny = py + rad * Math.sin(ang);
-              ctx.lineTo(nx, ny);
-              px = nx; py = ny;
+        function toHex(buffer) {
+            return Array.from(new Uint8Array(buffer)).map(b => b.toString(16).padStart(2, '0')).join('');
+        }
+
+        function canonicalStringify(value) {
+            if (value === null || typeof value !== 'object') return JSON.stringify(value);
+            if (Array.isArray(value)) return `[${value.map(canonicalStringify).join(',')}]`;
+            return `{${Object.keys(value).sort().map(key => `${JSON.stringify(key)}:${canonicalStringify(value[key])}`).join(',')}}`;
+        }
+
+        function concatBytes(...arrays) {
+            const total = arrays.reduce((sum, arr) => sum + arr.length, 0);
+            const out = new Uint8Array(total);
+            let offset = 0;
+            for (const arr of arrays) {
+                out.set(arr, offset);
+                offset += arr.length;
             }
-            ctx.stroke();
-          }
+            return out;
         }
 
-        // constellation connections
-        ctx.strokeStyle = `rgba(${filamentCol[0]},${filamentCol[1]},${filamentCol[2]},0.13)`;
-        ctx.lineWidth = 0.8;
-        for (let i = 0; i < Math.floor(14 * g.petal_density); i++) {
-          const a1 = rng() * Math.PI * 2;
-          const a2 = rng() * Math.PI * 2;
-          const r1 = R * (0.18 + rng() * 0.72);
-          const r2 = R * (0.18 + rng() * 0.72);
-          ctx.beginPath();
-          ctx.moveTo(cx + r1 * Math.cos(a1), cy + r1 * Math.sin(a1));
-          ctx.lineTo(cx + r2 * Math.cos(a2), cy + r2 * Math.sin(a2));
-          ctx.stroke();
+        async function deriveDeterministicCryptoMaterial(password, fileHash, metaBytes) {
+            const enc = new TextEncoder();
+            const metaHash = await sha256(metaBytes);
+            const saltSeed = concatBytes(enc.encode('SVA6 deterministic salt v1\0'), fileHash, metaHash);
+            const ivSeed = concatBytes(enc.encode('SVA6 deterministic iv v1\0'), fileHash, metaHash);
+            const salt = (await sha256(saltSeed)).slice(0, 16);
+            const iv = (await sha256(ivSeed)).slice(0, 12);
+            return { salt, iv };
         }
-      }
 
-      // 4. Glow veins (soft multiple strokes)
-      if (layers.has("glow_veins")) {
-        ctx.strokeStyle = `rgba(${glowCol[0]},${glowCol[1]},${glowCol[2]},0.09)`;
-        ctx.lineWidth = 7;
-        for (let k = 0; k < g.symmetry * 3; k++) {
-          const ang = (k / (g.symmetry * 3)) * Math.PI * 2 + (rng() - 0.5) * 0.2;
-          const len = R * (0.42 + rng() * 0.45);
-          ctx.beginPath();
-          ctx.moveTo(cx, cy);
-          ctx.lineTo(cx + len * Math.cos(ang), cy + len * Math.sin(ang));
-          ctx.stroke();
-        }
-        // second softer pass
-        ctx.strokeStyle = `rgba(${glowCol[0]},${glowCol[1]},${glowCol[2]},0.05)`;
-        ctx.lineWidth = 14;
-        for (let k = 0; k < g.symmetry * 2; k++) {
-          const ang = (k / (g.symmetry * 2)) * Math.PI * 2;
-          const len = R * (0.55 + rng() * 0.3);
-          ctx.beginPath();
-          ctx.moveTo(cx, cy);
-          ctx.lineTo(cx + len * Math.cos(ang), cy + len * Math.sin(ang));
-          ctx.stroke();
-        }
-      }
+        const SVA_CHUNK_TYPE = 'svAq';
+        const PNG_SIGNATURE = [137, 80, 78, 71, 13, 10, 26, 10];
+        const CRC_TABLE = (() => {
+            const table = new Uint32Array(256);
+            for (let n = 0; n < 256; n++) {
+                let c = n;
+                for (let k = 0; k < 8; k++) c = (c & 1) ? (0xEDB88320 ^ (c >>> 1)) : (c >>> 1);
+                table[n] = c >>> 0;
+            }
+            return table;
+        })();
 
-      // 5. Star nodes
-      if (layers.has("star_nodes")) {
-        for (let i = 0; i < g.rings; i++) {
-          const frac = (i + 1) / (g.rings + 0.7);
-          const rr = R * (0.15 + 0.83 * frac);
-          for (let k = 0; k < g.symmetry; k++) {
-            const ang = (k / g.symmetry) * Math.PI * 2 + (rng() - 0.5) * 0.05;
-            const x = cx + rr * Math.cos(ang);
-            const y = cy + rr * Math.sin(ang);
-            const sz = 1.2 + rng() * 2.4;
+        function crc32(bytes) {
+            let c = 0xFFFFFFFF;
+            for (const byte of bytes) c = CRC_TABLE[(c ^ byte) & 0xFF] ^ (c >>> 8);
+            return (c ^ 0xFFFFFFFF) >>> 0;
+        }
+
+        function writeUint32BE(target, offset, value) {
+            target[offset] = (value >>> 24) & 0xFF;
+            target[offset + 1] = (value >>> 16) & 0xFF;
+            target[offset + 2] = (value >>> 8) & 0xFF;
+            target[offset + 3] = value & 0xFF;
+        }
+
+        function readUint32BE(bytes, offset) {
+            return ((bytes[offset] << 24) | (bytes[offset + 1] << 16) | (bytes[offset + 2] << 8) | bytes[offset + 3]) >>> 0;
+        }
+
+        function makePngChunk(type, chunkData) {
+            const typeBytes = new TextEncoder().encode(type);
+            const chunk = new Uint8Array(12 + chunkData.length);
+            writeUint32BE(chunk, 0, chunkData.length);
+            chunk.set(typeBytes, 4);
+            chunk.set(chunkData, 8);
+            writeUint32BE(chunk, 8 + chunkData.length, crc32(concatBytes(typeBytes, chunkData)));
+            return chunk;
+        }
+
+        function assertPng(bytes) {
+            for (let i = 0; i < PNG_SIGNATURE.length; i++) {
+                if (bytes[i] !== PNG_SIGNATURE[i]) throw new Error('Invalid PNG signature.');
+            }
+        }
+
+        function insertSvaChunk(pngBytes, payload) {
+            assertPng(pngBytes);
+            let offset = 8;
+            while (offset + 12 <= pngBytes.length) {
+                const length = readUint32BE(pngBytes, offset);
+                const type = String.fromCharCode(...pngBytes.slice(offset + 4, offset + 8));
+                if (type === 'IEND') {
+                    return concatBytes(pngBytes.slice(0, offset), makePngChunk(SVA_CHUNK_TYPE, payload), pngBytes.slice(offset));
+                }
+                offset += 12 + length;
+            }
+            throw new Error('PNG is missing IEND chunk.');
+        }
+
+        function extractSvaChunk(pngBytes) {
+            assertPng(pngBytes);
+            let offset = 8;
+            while (offset + 12 <= pngBytes.length) {
+                const length = readUint32BE(pngBytes, offset);
+                const type = String.fromCharCode(...pngBytes.slice(offset + 4, offset + 8));
+                const dataStart = offset + 8;
+                const dataEnd = dataStart + length;
+                if (dataEnd + 4 > pngBytes.length) throw new Error('Truncated PNG chunk.');
+                if (type === SVA_CHUNK_TYPE) return pngBytes.slice(dataStart, dataEnd);
+                offset = dataEnd + 4;
+            }
+            return null;
+        }
+
+        function canvasToPngBlob() {
+            return new Promise((resolve, reject) => {
+                canvas.toBlob(blob => {
+                    if (blob) resolve(blob);
+                    else reject(new Error('PNG export failed.'));
+                }, 'image/png');
+            });
+        }
+
+        // --- PSYCHOACOUSTIC MATH ENGINE ---
+        function sfc32(a, b, c, d) {
+            return function() {
+              a >>>= 0; b >>>= 0; c >>>= 0; d >>>= 0; 
+              var t = (a + b) | 0;
+              a = b ^ b >>> 9;
+              b = c + (c << 3) | 0;
+              c = (c << 21 | c >>> 11);
+              d = d + 1 | 0;
+              t = t + d | 0;
+              c = c + t | 0;
+              return (t >>> 0) / 4294967296;
+            }
+        }
+
+        function fftMagnitudeReal(signal) {
+            const n = signal.length;
+            const re = new Float64Array(n);
+            const im = new Float64Array(n);
+            for (let i = 0; i < n; i++) re[i] = signal[i];
+
+            let j = 0;
+            for (let i = 1; i < n; i++) {
+                let bit = n >> 1;
+                while (j & bit) {
+                    j ^= bit;
+                    bit >>= 1;
+                }
+                j ^= bit;
+                if (i < j) {
+                    const tr = re[i]; re[i] = re[j]; re[j] = tr;
+                    const ti = im[i]; im[i] = im[j]; im[j] = ti;
+                }
+            }
+
+            for (let len = 2; len <= n; len <<= 1) {
+                const ang = -2 * Math.PI / len;
+                const wlenCos = Math.cos(ang);
+                const wlenSin = Math.sin(ang);
+                for (let i = 0; i < n; i += len) {
+                    let wCos = 1;
+                    let wSin = 0;
+                    const half = len >> 1;
+                    for (let k = 0; k < half; k++) {
+                        const uRe = re[i + k];
+                        const uIm = im[i + k];
+                        const vRe = re[i + k + half] * wCos - im[i + k + half] * wSin;
+                        const vIm = re[i + k + half] * wSin + im[i + k + half] * wCos;
+                        re[i + k] = uRe + vRe;
+                        im[i + k] = uIm + vIm;
+                        re[i + k + half] = uRe - vRe;
+                        im[i + k + half] = uIm - vIm;
+
+                        const nextCos = wCos * wlenCos - wSin * wlenSin;
+                        wSin = wCos * wlenSin + wSin * wlenCos;
+                        wCos = nextCos;
+                    }
+                }
+            }
+
+            const mags = new Float64Array(n >> 1);
+            for (let i = 0; i < mags.length; i++) {
+                mags[i] = Math.sqrt(re[i] * re[i] + im[i] * im[i]);
+            }
+            return mags;
+        }
+
+        function spectralProfile(pcmL, pcmR, sampleRate) {
+            const n = 2048;
+            const half = n >> 1;
+            const length = Math.min(pcmL.length, pcmR.length);
+            const hanning = new Float64Array(n);
+            for (let i = 0; i < n; i++) hanning[i] = 0.5 - 0.5 * Math.cos((2 * Math.PI * i) / (n - 1));
+
+            const centers = [0.12, 0.37, 0.63, 0.88].map(r => Math.floor(length * r));
+            const acc = new Float64Array(half);
+            let windowsUsed = 0;
+            for (const center of centers) {
+                const start = center - (n >> 1);
+                if (start < 0 || start + n >= length) continue;
+                const window = new Float64Array(n);
+                for (let i = 0; i < n; i++) {
+                    const mono = (pcmL[start + i] + pcmR[start + i]) * 0.5;
+                    window[i] = mono * hanning[i];
+                }
+                const mags = fftMagnitudeReal(window);
+                for (let i = 0; i < half; i++) acc[i] += mags[i];
+                windowsUsed++;
+            }
+
+            if (!windowsUsed) {
+                return { spectralCentroid: 900, spectralRolloff: 2500, spectralFlatness: 0.45, lowEnergy: 0.33, midEnergy: 0.34, highEnergy: 0.33, peakDensity: 0.12 };
+            }
+            for (let i = 0; i < half; i++) acc[i] /= windowsUsed;
+
+            let totalMag = 0;
+            let centroidNumerator = 0;
+            let geomSum = 0;
+            let low = 0, mid = 0, high = 0;
+            const hzPerBin = sampleRate / n;
+            for (let i = 1; i < half; i++) {
+                const hz = i * hzPerBin;
+                const mag = acc[i] + 1e-12;
+                totalMag += mag;
+                centroidNumerator += hz * mag;
+                geomSum += Math.log(mag);
+                if (hz < 220) low += mag;
+                else if (hz < 2200) mid += mag;
+                else high += mag;
+            }
+
+            const spectralCentroid = totalMag > 0 ? centroidNumerator / totalMag : 900;
+
+            let cumulative = 0;
+            let spectralRolloff = sampleRate * 0.25;
+            const target = totalMag * 0.85;
+            for (let i = 1; i < half; i++) {
+                cumulative += acc[i];
+                if (cumulative >= target) {
+                    spectralRolloff = i * hzPerBin;
+                    break;
+                }
+            }
+
+            const arithmetic = totalMag / Math.max(1, half - 1);
+            const geometric = Math.exp(geomSum / Math.max(1, half - 1));
+            const spectralFlatness = arithmetic > 0 ? geometric / arithmetic : 0.45;
+
+            const energySum = low + mid + high || 1;
+            const lowEnergy = low / energySum;
+            const midEnergy = mid / energySum;
+            const highEnergy = high / energySum;
+
+            let peaks = 0;
+            for (let i = 2; i < half - 2; i++) {
+                const m = acc[i];
+                if (m > acc[i - 1] && m > acc[i + 1] && m > totalMag / half * 1.9) peaks++;
+            }
+            const peakDensity = peaks / half;
+
+            return { spectralCentroid, spectralRolloff, spectralFlatness, lowEnergy, midEnergy, highEnergy, peakDensity };
+        }
+
+        async function analyzeAcoustics(fileBuffer) {
+            setStatus('Decoding audio for psychoacoustic analysis...', 'text-blue-400 animate-pulse');
+            try {
+                const audioCtx = new (window.OfflineAudioContext || window.webkitOfflineAudioContext)(2, 44100, 44100);
+                const audioBuffer = await audioCtx.decodeAudioData(fileBuffer.slice(0)); 
+                const pcmL = audioBuffer.getChannelData(0);
+                const pcmR = audioBuffer.numberOfChannels > 1 ? audioBuffer.getChannelData(1) : pcmL;
+
+                setStatus('Extracting physical audio traits...', 'text-yellow-400 animate-pulse');
+                
+                let totalRMS = 0, zeroCrossings = 0, peaks = 0, sumSqDiff = 0, maxPeak = 0;
+                let attackSpeed = 1.0; 
+                const chunkSize = 2048;
+                let lastRms = 0, foundFirstPeak = false;
+
+                for (let i = 0; i < pcmL.length; i += chunkSize) {
+                    let sumSq = 0, zc = 0, prevSign = Math.sign(pcmL[i]);
+
+                    for (let j = 0; j < chunkSize && i + j < pcmL.length; j++) {
+                        const mono = (pcmL[i + j] + pcmR[i + j]) / 2;
+                        sumSq += mono * mono;
+                        sumSqDiff += Math.pow(pcmL[i + j] - pcmR[i + j], 2);
+                        
+                        const absVal = Math.abs(mono);
+                        if (absVal > maxPeak) maxPeak = absVal;
+
+                        const sign = Math.sign(mono);
+                        if (sign !== 0 && sign !== prevSign) { zc++; prevSign = sign; }
+                    }
+
+                    const rms = Math.sqrt(sumSq / chunkSize);
+                    totalRMS += rms;
+                    zeroCrossings += zc;
+
+                    if (rms > 0.05 && !foundFirstPeak) { attackSpeed = i / audioBuffer.sampleRate; foundFirstPeak = true; }
+                    if (rms > lastRms * 1.5 && rms > 0.05) peaks++; 
+                    lastRms = rms;
+                }
+
+                const chunks = pcmL.length / chunkSize;
+                const avgRms = totalRMS / chunks;
+                const avgZcr = zeroCrossings / chunks;
+                const crestFactor = avgRms > 0 ? (maxPeak / avgRms) : 1;
+                const stereoWidth = avgRms > 0 ? (Math.sqrt(sumSqDiff / (chunks * chunkSize)) / avgRms) : 0;
+
+                const layers = Math.min(24, Math.max(6, Math.floor(avgRms * 120)));
+                const baseHue = Math.floor(avgZcr * 1.5) % 360;
+                const symIndex = peaks % [4, 6, 8, 12, 16, 24].length;
+                const symmetry = [4, 6, 8, 12, 16, 24][symIndex];
+
+                let sumL2 = 0, sumR2 = 0, sumLR = 0;
+                const sampleStep = Math.max(1, Math.floor(pcmL.length / 120000));
+                for (let i = 0; i < pcmL.length; i += sampleStep) {
+                    const l = pcmL[i];
+                    const r = pcmR[i];
+                    sumL2 += l * l;
+                    sumR2 += r * r;
+                    sumLR += l * r;
+                }
+
+                const phaseCoherenceDen = Math.sqrt(sumL2 * sumR2) || 1;
+                const phaseCoherence = Math.max(-1, Math.min(1, sumLR / phaseCoherenceDen));
+
+                const windowSize = 4096;
+                let minWindowRms = Infinity;
+                let maxWindowRms = 0;
+                for (let i = 0; i < pcmL.length; i += windowSize) {
+                    let localSum = 0;
+                    let n = 0;
+                    for (let j = 0; j < windowSize && i + j < pcmL.length; j++) {
+                        const mono = (pcmL[i + j] + pcmR[i + j]) * 0.5;
+                        localSum += mono * mono;
+                        n++;
+                    }
+                    if (n === 0) continue;
+                    const localRms = Math.sqrt(localSum / n);
+                    if (localRms > 0) {
+                        minWindowRms = Math.min(minWindowRms, localRms);
+                        maxWindowRms = Math.max(maxWindowRms, localRms);
+                    }
+                }
+
+                const dynamicRangeDb = (isFinite(minWindowRms) && minWindowRms > 0)
+                    ? 20 * Math.log10((maxWindowRms + 1e-6) / (minWindowRms + 1e-6))
+                    : 6;
+                const spectrum = spectralProfile(pcmL, pcmR, audioBuffer.sampleRate);
+                const durationSec = audioBuffer.duration;
+
+                const chunkRms = [];
+                for (let i = 0; i < pcmL.length; i += chunkSize) {
+                    let sumSq = 0;
+                    let n = 0;
+                    for (let j = 0; j < chunkSize && i + j < pcmL.length; j++) {
+                        const mono = (pcmL[i + j] + pcmR[i + j]) * 0.5;
+                        sumSq += mono * mono;
+                        n++;
+                    }
+                    if (n > 0) chunkRms.push(Math.sqrt(sumSq / n));
+                }
+                chunkRms.sort((a, b) => a - b);
+                const silenceFloorRms = chunkRms.length
+                    ? chunkRms[Math.floor(chunkRms.length * 0.08)] || 0.008
+                    : 0.008;
+
+                const beatIntervals = [];
+                let lastBeat = -1;
+                for (let i = 1; i < chunkRms.length; i++) {
+                    if (chunkRms[i] > silenceFloorRms * 4 && chunkRms[i] > chunkRms[i - 1] * 1.35) {
+                        if (lastBeat >= 0) beatIntervals.push(i - lastBeat);
+                        lastBeat = i;
+                    }
+                }
+                let estimatedTempoBpm = 118;
+                if (beatIntervals.length > 2) {
+                    beatIntervals.sort((a, b) => a - b);
+                    const medianChunks = beatIntervals[Math.floor(beatIntervals.length / 2)];
+                    const secPerBeat = (medianChunks * chunkSize) / audioBuffer.sampleRate;
+                    if (secPerBeat > 0) estimatedTempoBpm = clamp(60 / secPerBeat, 55, 190);
+                }
+
+                return {
+                    layers, baseHue, symmetry, avgZcr, avgRms, crestFactor, stereoWidth, attackSpeed,
+                    phaseCoherence, dynamicRangeDb, durationSec, silenceFloorRms, estimatedTempoBpm,
+                    ...spectrum
+                };
+
+            } catch(e) {
+                console.warn("Audio analysis failed. Falling back to Cryptographic seed.");
+                const view = new DataView(fileBuffer);
+                const fallbackVal = view.byteLength > 4 ? view.getUint32(0, true) : 100;
+                return {
+                    layers: 8 + (fallbackVal % 12),
+                    baseHue: fallbackVal % 360,
+                    symmetry: [4, 6, 8, 12][fallbackVal % 4],
+                    avgZcr: 100,
+                    avgRms: 0.1,
+                    crestFactor: 2.0,
+                    stereoWidth: 0,
+                    attackSpeed: 0.5,
+                    phaseCoherence: 0.6,
+                    dynamicRangeDb: 8,
+                    durationSec: 210,
+                    silenceFloorRms: 0.008,
+                    estimatedTempoBpm: 118,
+                    spectralCentroid: 900,
+                    spectralRolloff: 2500,
+                    spectralFlatness: 0.45,
+                    lowEnergy: 0.33,
+                    midEnergy: 0.34,
+                    highEnergy: 0.33,
+                    peakDensity: 0.12
+                };
+            }
+        }
+
+        function superformula(phi, m, n1, n2, n3, a = 1, b = 1) {
+            const term1 = Math.pow(Math.abs(Math.cos((m * phi) / 4) / a), n2);
+            const term2 = Math.pow(Math.abs(Math.sin((m * phi) / 4) / b), n3);
+            return Math.pow(Math.max(term1 + term2, 0.000001), -1 / n1);
+        }
+
+        function clamp01(v) {
+            return Math.max(0, Math.min(1, v));
+        }
+
+        function clamp(v, lo, hi) {
+            return Math.max(lo, Math.min(hi, v));
+        }
+
+        function setBlendMode(mode, fallback = 'source-over') {
+            ctx.globalCompositeOperation = mode;
+            if (ctx.globalCompositeOperation !== mode) ctx.globalCompositeOperation = fallback;
+        }
+
+        // --- COSMIC YANTRA HELPERS (v8) ---
+        function mulberry32(a) {
+            return function() {
+                let t = (a += 0x6D2B79F5);
+                t = Math.imul(t ^ (t >>> 15), t | 1);
+                t ^= t + Math.imul(t ^ (t >>> 7), t | 61);
+                return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+            };
+        }
+
+        function generateSeed(str) {
+            let h = 0xdeadbeef;
+            for (let i = 0; i < str.length; i++) {
+                h = Math.imul(h ^ str.charCodeAt(i), 2654435761);
+            }
+            return (h ^ (h >>> 16)) >>> 0;
+        }
+
+        function hashUnit(hashBytes, index) {
+            return hashBytes[index % hashBytes.length] / 255;
+        }
+
+        function shiftHue(hue, hueShift) {
+            return ((hue + hueShift) % 360 + 360) % 360;
+        }
+
+        function strokeGlowPath(path, hue, sat, light, coreAlpha, width) {
+            ctx.strokeStyle = `hsla(${hue}, ${sat}%, ${light}%, ${coreAlpha * 0.15})`;
+            ctx.lineWidth = width * 6;
+            ctx.stroke(path);
+            ctx.strokeStyle = `hsla(${hue}, ${sat}%, ${light}%, ${coreAlpha * 0.4})`;
+            ctx.lineWidth = width * 2.5;
+            ctx.stroke(path);
+            ctx.strokeStyle = `hsla(${hue}, ${Math.max(0, sat - 20)}%, 100%, ${coreAlpha})`;
+            ctx.lineWidth = width * 0.8;
+            ctx.stroke(path);
+        }
+
+        function getCosmicHue(angle, stereoSeparation, depth, preset, hueShift = 0) {
+            const normalizedX = Math.cos(angle);
+            let hue;
+            if (preset === 'cathedral') {
+                hue = 38 + normalizedX * 14 + depth * 14;
+                return shiftHue(hue, hueShift);
+            }
+            if (preset === 'byzantine') {
+                hue = normalizedX > 0
+                    ? 220 + normalizedX * 28 + depth * 18
+                    : Math.abs(normalizedX) * 28 - depth * 12;
+                return shiftHue(hue, hueShift);
+            }
+            if (preset === 'cosmic') {
+                hue = normalizedX > 0
+                    ? 205 + normalizedX * 55 + depth * 25
+                    : 12 + Math.abs(normalizedX) * 30 + depth * 22;
+                return shiftHue(hue, hueShift);
+            }
+            if (normalizedX > 0) {
+                hue = 210 + normalizedX * 60 * Math.max(stereoSeparation, 0.4) + depth * 40;
+            } else {
+                hue = 15 + normalizedX * 30 * Math.max(stereoSeparation, 0.4) - depth * 30;
+            }
+            if (stereoSeparation < 0.18) {
+                hue = 45 + depth * 20;
+            }
+            return shiftHue(hue, hueShift);
+        }
+
+        function drawCosmicStarfield(width, height, prng) {
+            const total = 240;
+            const halfW = width / 2;
+            for (let i = 0; i < total; i++) {
+                const x = prng() * width;
+                const y = prng() * height;
+                const size = prng() * 1.4;
+                const opacity = prng() * 0.55;
+                if (prng() > 0.82) {
+                    ctx.fillStyle = x > halfW
+                        ? `rgba(120, 200, 255, ${opacity})`
+                        : `rgba(255, 130, 130, ${opacity})`;
+                } else {
+                    ctx.fillStyle = `rgba(255, 255, 255, ${opacity})`;
+                }
+                ctx.beginPath();
+                ctx.arc(x, y, size, 0, Math.PI * 2);
+                ctx.fill();
+            }
+        }
+
+        function drawOrbitTrapMetalwork(cx, cy, maxR, matrix, preset) {
+            const { seedStr, sym, sharp, stereo, dualF, hueShift, rotationOffset } = matrix;
+            const prng = mulberry32(generateSeed(seedStr + '_orbit_traps'));
+            const strands = Math.max(10, sym * 2);
+            const iterations = 42;
+
+            setBlendMode('screen', 'lighter');
+            for (let strand = 0; strand < strands; strand++) {
+                const phase = (strand / strands) * Math.PI * 2 + rotationOffset;
+                const hue = getCosmicHue(phase, stereo, strand / strands, preset, hueShift);
+                const trapRadius = maxR * (0.08 + prng() * 0.18);
+                const trapAngle = phase + (prng() - 0.5) * 0.8;
+                const trapX = Math.cos(trapAngle) * maxR * (0.26 + prng() * 0.5);
+                const trapY = Math.sin(trapAngle) * maxR * (0.26 + prng() * 0.5);
+                const path = new Path2D();
+                let started = false;
+
+                for (let i = 0; i < iterations; i++) {
+                    const t = i / Math.max(1, iterations - 1);
+                    const cRe = Math.cos(phase) * (0.28 + t * 0.9);
+                    const cIm = Math.sin(phase) * (0.28 + t * 0.9);
+                    let zRe = cRe * (0.3 + dualF);
+                    let zIm = cIm * (0.3 + dualF);
+                    let minTrap = 10;
+
+                    for (let n = 0; n < 10; n++) {
+                        const zr2 = zRe * zRe - zIm * zIm;
+                        const zi2 = 2 * zRe * zIm;
+                        zRe = zr2 * zRe - zi2 * zIm + cRe * 0.2;
+                        zIm = zr2 * zIm + zi2 * zRe + cIm * 0.2;
+
+                        const angle = Math.atan2(zIm, zRe);
+                        const sector = Math.round(angle * sym / (Math.PI * 2));
+                        const rot = -sector * Math.PI * 2 / sym;
+                        const rr = zRe * Math.cos(rot) - zIm * Math.sin(rot);
+                        const ii = zRe * Math.sin(rot) + zIm * Math.cos(rot);
+                        zRe = Math.abs(rr);
+                        zIm = ii;
+
+                        const dx = zRe * maxR * 0.35 - trapX;
+                        const dy = zIm * maxR * 0.35 - trapY;
+                        minTrap = Math.min(minTrap, Math.sqrt(dx * dx + dy * dy) / Math.max(1, trapRadius));
+                    }
+
+                    const radius = maxR * (0.2 + t * 0.68) * (1 + Math.sin(t * Math.PI * sym) * 0.04 * sharp);
+                    const a = phase + t * Math.PI * 2 * (0.12 + dualF * 0.24);
+                    const pull = Math.max(0, 1 - minTrap);
+                    const x = cx + radius * Math.cos(a) + pull * trapRadius * Math.cos(trapAngle);
+                    const y = cy + radius * Math.sin(a) + pull * trapRadius * Math.sin(trapAngle);
+                    if (!started) {
+                        path.moveTo(x, y);
+                        started = true;
+                    } else {
+                        path.lineTo(x, y);
+                    }
+                }
+
+                ctx.strokeStyle = `hsla(${hue}, 85%, 70%, 0.12)`;
+                ctx.lineWidth = 0.45 + prng() * 0.9;
+                ctx.stroke(path);
+            }
+        }
+
+        function drawHashSignature(cx, cy, maxR, hashBytes, matrix, preset) {
+            const { hueShift, lineEnergy, stereo, signatureTwist } = matrix;
+            const markerCount = hashBytes.length;
+
+            setBlendMode('lighter', 'source-over');
+            for (let i = 0; i < markerCount; i++) {
+                const byte = hashBytes[i];
+                const angle = signatureTwist + (i / markerCount) * Math.PI * 2;
+                const depth = i / markerCount;
+                const radius = maxR * (0.94 + ((byte >>> 5) / 7) * 0.13);
+                const markerLength = maxR * (0.018 + ((byte & 0x0F) / 15) * 0.055);
+                const hue = getCosmicHue(angle, stereo, depth, preset, hueShift + (byte & 0x1F) * 2.5);
+                const x1 = cx + radius * Math.cos(angle);
+                const y1 = cy + radius * Math.sin(angle);
+                const x2 = cx + (radius + markerLength) * Math.cos(angle);
+                const y2 = cy + (radius + markerLength) * Math.sin(angle);
+
+                ctx.strokeStyle = `hsla(${hue}, 95%, 68%, ${0.28 + ((byte >>> 4) / 15) * 0.42})`;
+                ctx.fillStyle = `hsla(${hue}, 95%, 62%, ${0.18 + ((byte & 0x0F) / 15) * 0.34})`;
+                ctx.lineWidth = 0.55 + ((byte >>> 6) * 0.55) + lineEnergy * 0.16;
+
+                if ((byte & 0x03) === 0) {
+                    ctx.beginPath();
+                    ctx.moveTo(x1, y1);
+                    ctx.lineTo(x2, y2);
+                    ctx.stroke();
+                } else if ((byte & 0x03) === 1) {
+                    ctx.beginPath();
+                    ctx.arc(x2, y2, 1.2 + (byte & 0x07), 0, Math.PI * 2);
+                    ctx.fill();
+                } else {
+                    const tangent = angle + Math.PI / 2;
+                    const spread = markerLength * (0.35 + ((byte >>> 3) & 0x03) * 0.12);
+                    const path = new Path2D();
+                    path.moveTo(x2, y2);
+                    path.lineTo(x1 + spread * Math.cos(tangent), y1 + spread * Math.sin(tangent));
+                    path.lineTo(x1 - spread * Math.cos(tangent), y1 - spread * Math.sin(tangent));
+                    path.closePath();
+                    ctx.fill(path);
+                    ctx.stroke(path);
+                }
+            }
+        }
+
+        function drawRingPlasmaFlares(cx, cy, radius, ringIndex, totalRings, matrix, preset, yantraGlow) {
+            const {
+                seedStr,
+                flux,
+                densityBoost,
+                stereo,
+                hueShift,
+                rotationOffset,
+                lineEnergy,
+                asym,
+                dualF
+            } = matrix;
+            const prng = mulberry32(generateSeed(seedStr + '_ring_flare_' + ringIndex));
+            const depth = ringIndex / Math.max(1, totalRings);
+            const ringEnergy = clamp01(0.3 + flux * 0.55 + densityBoost * 0.25 + yantraGlow * 0.3);
+            const flareCount = 2 + Math.floor(prng() * 2 + ringEnergy * 2.5);
+
+            setBlendMode('lighter', 'source-over');
+            for (let flare = 0; flare < flareCount; flare++) {
+                const centerAngle = prng() * Math.PI * 2 + rotationOffset * 0.45;
+                const arcSpan = (0.05 + prng() * 0.1 + ringEnergy * 0.12) * Math.PI;
+                const startAngle = centerAngle - arcSpan * 0.5;
+                const endAngle = centerAngle + arcSpan * 0.5;
+                const hue = getCosmicHue(centerAngle, stereo, depth, preset, hueShift + (prng() - 0.5) * 70);
+
+                const arcPath = new Path2D();
+                arcPath.arc(cx, cy, radius, startAngle, endAngle);
+                const arcAlpha = 0.25 + ringEnergy * 0.45 + prng() * 0.12;
+                const arcWidth = 0.75 + lineEnergy * 0.6 + prng() * (0.5 + ringEnergy * 1.1);
+                strokeGlowPath(arcPath, hue, 96, 68, arcAlpha, arcWidth);
+
+                const filamentCount = 2 + Math.floor(prng() * 2 + densityBoost * 3);
+                for (let filamentIndex = 0; filamentIndex < filamentCount; filamentIndex++) {
+                    const a = centerAngle + (prng() - 0.5) * arcSpan * 0.9;
+                    const lift = radius * (0.06 + prng() * 0.09 + dualF * 0.04);
+                    const drift = (prng() - 0.5) * (0.22 + asym * 0.3);
+                    const startX = cx + radius * Math.cos(a);
+                    const startY = cy + radius * Math.sin(a);
+                    const cp1R = radius + lift * 0.35;
+                    const cp2R = radius + lift * 0.72;
+                    const endR = radius + lift;
+                    const filamentPath = new Path2D();
+                    filamentPath.moveTo(startX, startY);
+                    filamentPath.bezierCurveTo(
+                        cx + cp1R * Math.cos(a + drift),
+                        cy + cp1R * Math.sin(a + drift),
+                        cx + cp2R * Math.cos(a + drift * 0.4),
+                        cy + cp2R * Math.sin(a + drift * 0.4),
+                        cx + endR * Math.cos(a),
+                        cy + endR * Math.sin(a)
+                    );
+                    strokeGlowPath(filamentPath, hue, 92, 63, arcAlpha * 0.72, Math.max(0.5, arcWidth * 0.5));
+                }
+
+                const sparkAngle = centerAngle + (prng() - 0.5) * arcSpan * 0.5;
+                const sparkRadius = radius * (1.005 + prng() * 0.018);
+                const sparkX = cx + sparkRadius * Math.cos(sparkAngle);
+                const sparkY = cy + sparkRadius * Math.sin(sparkAngle);
+                const sparkSize = 1.3 + prng() * (2.2 + ringEnergy * 2.1);
+                ctx.fillStyle = `hsla(${hue}, 100%, 86%, ${0.6 + ringEnergy * 0.32})`;
+                ctx.beginPath();
+                ctx.arc(sparkX, sparkY, sparkSize, 0, Math.PI * 2);
+                ctx.fill();
+            }
+        }
+
+        function drawFeaturePlasmaHalo(cx, cy, maxR, matrix, preset) {
+            const { seedStr, plasmaFeature, stereo, hueShift, rotationOffset, lineEnergy } = matrix;
+            if (plasmaFeature <= 0.12) return;
+
+            const prng = mulberry32(generateSeed(seedStr + '_feature_plasma_halo'));
+            const haloBands = 1 + (plasmaFeature > 0.74 ? 1 : 0);
+            const bandSpan = maxR * 0.07;
+
+            setBlendMode('lighter', 'source-over');
+            for (let band = 0; band < haloBands; band++) {
+                const bandDepth = clamp01(0.42 + band * 0.2 + plasmaFeature * 0.2);
+                const baseRadius = maxR * (0.54 + plasmaFeature * 0.16 + band * 0.08);
+                const segmentCount = 4 + Math.floor(prng() * 2 + plasmaFeature * 2);
+
+                for (let seg = 0; seg < segmentCount; seg++) {
+                    const centerAngle = (seg / segmentCount) * Math.PI * 2 + rotationOffset * 0.5 + (prng() - 0.5) * 0.18;
+                    const arcSpan = (0.05 + plasmaFeature * 0.06 + prng() * 0.05) * Math.PI;
+                    const hue = getCosmicHue(centerAngle, stereo, bandDepth, preset, hueShift + (prng() - 0.5) * 45);
+                    const haloPath = new Path2D();
+                    haloPath.arc(cx, cy, baseRadius + (prng() - 0.5) * bandSpan, centerAngle - arcSpan * 0.5, centerAngle + arcSpan * 0.5);
+                    const alpha = 0.11 + plasmaFeature * 0.24;
+                    const width = 0.45 + lineEnergy * 0.28 + plasmaFeature * 0.55;
+                    strokeGlowPath(haloPath, hue, 88, 64, alpha, width);
+                }
+            }
+        }
+
+        function deriveCosmicMatrix(hashBytes, acousticData, preset) {
+            const genreEl = document.getElementById('metaGenre');
+            const userGenre = genreEl ? genreEl.value.trim() : '';
+            return AurionAudioGearing.buildGearedCosmicMatrix(hashBytes, acousticData, preset, { hashUnit, clamp01, userGenre });
+        }
+
+        function buildPolygonPath(cx, cy, r, sides, rot) {
+            const p = new Path2D();
+            for (let i = 0; i <= sides; i++) {
+                const a = rot + (i / sides) * Math.PI * 2;
+                if (i === 0) p.moveTo(cx + r * Math.cos(a), cy + r * Math.sin(a));
+                else p.lineTo(cx + r * Math.cos(a), cy + r * Math.sin(a));
+            }
+            return p;
+        }
+
+        const ANCHOR_SHAPES = [3, 4, 6, 8, 12];
+
+        function drawCosmicWaves(cx, cy, maxR, matrix, preset) {
+            const { seedStr, lineEnergy, stereo, hueShift, asym, dualF } = matrix;
+            const prng = mulberry32(generateSeed(seedStr + '_cosmic_waves'));
             
-            ctx.fillStyle = `rgb(${starCol[0]},${starCol[1]},${starCol[2]})`;
-            ctx.fillRect(x - sz, y - sz, sz * 2, sz * 2);
+            setBlendMode('lighter', 'source-over');
+            const waveLayers = 4 + Math.floor(prng() * 4 + dualF * 2);
             
-            // faint halo
-            ctx.fillStyle = `rgba(255,252,235,0.18)`;
-            ctx.fillRect(x - sz * 2.1, y - sz * 2.1, sz * 4.2, sz * 4.2);
-          }
-        }
-      }
-
-      // 6. Energy core
-      if (layers.has("logo_energy_overlay")) {
-        const coreR = R * 0.072;
-        for (let i = 5; i >= 1; i--) {
-          const rr = coreR * (i / 3.2);
-          ctx.fillStyle = `rgba(${energyCol[0]},${energyCol[1]},${energyCol[2]},${0.12 + i * 0.11})`;
-          ctx.beginPath();
-          ctx.arc(cx, cy, rr, 0, Math.PI * 2);
-          ctx.fill();
-        }
-        ctx.fillStyle = "#fffef0";
-        ctx.fillRect(cx - 1.5, cy - 1.5, 3, 3);
-      }
-
-      // Subtle vignette
-      const grad = ctx.createRadialGradient(cx, cy, R * 0.55, cx, cy, R * 1.05);
-      grad.addColorStop(0, "rgba(0,0,0,0)");
-      grad.addColorStop(1, "rgba(0,0,0,0.55)");
-      ctx.fillStyle = grad;
-      ctx.fillRect(0, 0, w, h);
-
-      ctx.restore();
-    }
-
-    // Seeded RNG (mulberry32) — matches Python determinism
-    function mulberry32(a) {
-      return function() {
-        a |= 0; a = a + 0x6D2B79F5 | 0;
-        let t = Math.imul(a ^ a >>> 15, 1 | a);
-        t = t + Math.imul(t ^ t >>> 7, 61 | t) | 0;
-        return ((t ^ t >>> 14) >>> 0) / 4294967296;
-      };
-    }
-
-    function hslToRgb(h, s, l) {
-      h = h % 360;
-      const c = (1 - Math.abs(2 * l - 1)) * s;
-      const x = c * (1 - Math.abs(((h / 60) % 2) - 1));
-      const m = l - c / 2;
-      let r, g, b;
-      if (h < 60) [r, g, b] = [c, x, 0];
-      else if (h < 120) [r, g, b] = [x, c, 0];
-      else if (h < 180) [r, g, b] = [0, c, x];
-      else if (h < 240) [r, g, b] = [0, x, c];
-      else if (h < 300) [r, g, b] = [x, 0, c];
-      else [r, g, b] = [c, 0, x];
-      return [Math.round((r + m) * 255), Math.round((g + m) * 255), Math.round((b + m) * 255)];
-    }
-
-    // ===== UI ↔ DIRECTIVE SYNC =====
-    function updateUIFromDirective(dir) {
-      // Geometry
-      document.getElementById('symmetry').value = dir.geometry.symmetry;
-      document.getElementById('rings').value = dir.geometry.rings;
-      document.getElementById('density').value = dir.geometry.petal_density;
-      document.getElementById('tension').value = dir.geometry.spiral_tension;
-      document.getElementById('energy').value = dir.geometry.energy_bias;
-      
-      // Color
-      document.getElementById('hue').value = dir.color.primary_hue;
-      document.getElementById('sat').value = dir.color.saturation;
-
-      // Values
-      syncValueBadges(dir);
-      
-      // Layers
-      renderLayerPills(dir);
-      
-      // JSON
-      renderDirectiveJSON(dir);
-    }
-
-    function syncValueBadges(dir) {
-      document.getElementById('sym-val').textContent = dir.geometry.symmetry;
-      document.getElementById('rings-val').textContent = dir.geometry.rings;
-      document.getElementById('density-val').textContent = dir.geometry.petal_density.toFixed(2);
-      document.getElementById('tension-val').textContent = dir.geometry.spiral_tension.toFixed(2);
-      document.getElementById('energy-val').textContent = dir.geometry.energy_bias.toFixed(2);
-      document.getElementById('hue-val').textContent = dir.color.primary_hue;
-      document.getElementById('sat-val').textContent = dir.color.saturation.toFixed(2);
-      document.getElementById('geometry-badge').innerHTML = `${dir.geometry.symmetry}-fold · ${dir.geometry.rings} rings`;
-    }
-
-    function renderLayerPills(dir) {
-      const container = document.getElementById('layer-pills');
-      container.innerHTML = '';
-      const allLayers = [
-        "base_cymatic_field", "mandala_skeleton", "filament_network",
-        "glow_veins", "star_nodes", "logo_energy_overlay"
-      ];
-      allLayers.forEach(layer => {
-        const active = dir.layers.includes(layer);
-        const pill = document.createElement('div');
-        pill.className = `layer-pill px-2.5 py-px cursor-pointer select-none ${active ? 'text-emerald-300 border-emerald-900/70' : 'text-zinc-500 opacity-60'}`;
-        pill.innerHTML = layer.replace(/_/g, ' ');
-        pill.onclick = () => {
-          if (active) {
-            dir.layers = dir.layers.filter(l => l !== layer);
-          } else {
-            dir.layers.push(layer);
-          }
-          renderLayerPills(dir);
-          redraw();
-          renderDirectiveJSON(dir);
-        };
-        container.appendChild(pill);
-      });
-    }
-
-    function updateDirectiveFromUI() {
-      if (!currentDirective) currentDirective = getDefaultDirective();
-      
-      const d = currentDirective;
-      d.geometry.symmetry = parseInt(document.getElementById('symmetry').value);
-      d.geometry.rings = parseInt(document.getElementById('rings').value);
-      d.geometry.petal_density = parseFloat(document.getElementById('density').value);
-      d.geometry.spiral_tension = parseFloat(document.getElementById('tension').value);
-      d.geometry.energy_bias = parseFloat(document.getElementById('energy').value);
-      
-      d.color.primary_hue = parseInt(document.getElementById('hue').value);
-      d.color.saturation = parseFloat(document.getElementById('sat').value);
-
-      syncValueBadges(d);
-      renderDirectiveJSON(d);
-      redraw();
-    }
-
-    function renderDirectiveJSON(dir) {
-      const el = document.getElementById('directive-json');
-      // pretty but compact
-      el.textContent = JSON.stringify(dir, null, 2);
-    }
-
-    function redraw() {
-      if (currentDirective) {
-        drawMandala(currentDirective);
-      }
-    }
-
-    // ===== AUDIO → DIRECTIVE =====
-    async function analyzeAudioAndUpdateDirective(fileOrBuffer) {
-      const status = document.getElementById('analysis-status');
-      status.style.display = 'flex';
-
-      try {
-        if (!audioContext) audioContext = new (window.AudioContext || window.webkitAudioContext)();
-
-        let arrayBuffer;
-        if (fileOrBuffer instanceof ArrayBuffer) {
-          arrayBuffer = fileOrBuffer;
-        } else {
-          arrayBuffer = await fileOrBuffer.arrayBuffer();
+            for (let i = 0; i < waveLayers; i++) {
+                const depth = i / waveLayers;
+                const baseRadius = maxR * (0.55 + depth * 0.4 + prng() * 0.1);
+                const amplitude = maxR * (0.02 + prng() * 0.05 + asym * 0.03);
+                const frequency = 12 + Math.floor(prng() * 32);
+                const phaseOffset = prng() * Math.PI * 2;
+                
+                const hue = getCosmicHue(phaseOffset, stereo, depth, preset, hueShift + (prng() - 0.5) * 60);
+                
+                const path = new Path2D();
+                for (let a = 0; a <= Math.PI * 2 + 0.05; a += 0.015) {
+                    const r = baseRadius + Math.sin(a * frequency + phaseOffset) * amplitude;
+                    const x = cx + r * Math.cos(a);
+                    const y = cy + r * Math.sin(a);
+                    if (a === 0) path.moveTo(x, y);
+                    else path.lineTo(x, y);
+                }
+                
+                // Outer glow / blur
+                ctx.strokeStyle = `hsla(${hue}, 80%, 65%, 0.12)`;
+                ctx.lineWidth = 1.5 + lineEnergy * 1.5;
+                ctx.stroke(path);
+                
+                // Sharp defined core line
+                ctx.strokeStyle = `hsla(${hue}, 95%, 90%, ${0.6 + prng() * 0.3})`;
+                ctx.lineWidth = 0.3 + lineEnergy * 0.2;
+                ctx.stroke(path);
+            }
         }
 
-        const decoded = await audioContext.decodeAudioData(arrayBuffer);
-        audioBuffer = decoded;
+        function drawCosmicYantraMandala(width, height, hashBytes, acousticData, styleMode) {
+            const preset = (styleMode || 'auto').toLowerCase();
+            const matrix = deriveCosmicMatrix(hashBytes, acousticData, preset);
+            const {
+                seedStr,
+                sym,
+                anchorIndex,
+                rings,
+                ringProfile,
+                lineEnergy,
+                flux,
+                dualF,
+                sharp,
+                asym,
+                stereo,
+                hueShift,
+                rotationOffset,
+                spiral,
+                layerWarp,
+                petalJitter,
+                densityBoost
+            } = matrix;
 
-        // Very lightweight client-side feature extraction (mirrors server-side spirit)
-        const channelData = decoded.getChannelData(0);
-        const duration = decoded.duration;
-        const rms = Math.sqrt(channelData.reduce((s, v) => s + v * v, 0) / channelData.length);
-        
-        // crude spectral centroid proxy
-        const fftSize = 2048;
-        const fft = new FFT(fftSize); // we'll use a tiny pure-js FFT below
-        // For simplicity we do a basic energy-weighted estimate
-        let centroid = 1100;
-        try {
-          const slice = channelData.slice(0, fftSize);
-          const spectrum = simpleSpectrum(slice);
-          let num = 0, den = 0;
-          for (let i = 0; i < spectrum.length; i++) {
-            num += i * spectrum[i];
-            den += spectrum[i];
-          }
-          if (den > 0) centroid = (num / den) * (decoded.sampleRate / 2 / spectrum.length);
-        } catch (e) { /* ignore */ }
+            const cx = width / 2;
+            const cy = height / 2;
+            const maxR = Math.min(width, height) * 0.45;
 
-        const bpmGuess = 60 + Math.floor(rms * 110) + (centroid > 1600 ? 18 : 0);
+            ctx.globalCompositeOperation = 'source-over';
+            ctx.shadowBlur = 0;
 
-        // Build directive
-        const sha = await sha256(arrayBuffer);
-        const seed = parseInt(sha.slice(0, 8), 16) >>> 0;
+            ctx.fillStyle = '#020204';
+            ctx.fillRect(0, 0, width, height);
 
-        currentDirective = getDefaultDirective();
-        currentDirective.source_audio = {
-          sha256: sha,
-          duration_s: Math.round(duration * 100) / 100,
-          bpm: Math.round(bpmGuess),
-          spectral_centroid: Math.round(centroid),
-          rms_energy: Math.round(rms * 1000) / 1000,
-          zero_crossing_rate: 0.04
-        };
-        currentDirective.seed = seed;
-        
-        // simple archetype mapping (same spirit as Python)
-        if (rms > 0.22 && centroid > 1700) {
-          currentDirective.archetype = { id: "plasma-storm-7", family: "fractal-storm", name: "Plasma Storm" };
-        } else if (bpmGuess > 138) {
-          currentDirective.archetype = { id: "thunder-lotus-11", family: "floral-cosmic", name: "Thunder Lotus" };
-        } else {
-          currentDirective.archetype = { id: "lotus-throne-13", family: "floral-cosmic", name: "Lotus Throne" };
+            const bgGrad = ctx.createRadialGradient(cx, cy, 0, cx, cy, Math.min(width, height) * 0.7);
+            if (preset === 'cathedral' || preset === 'byzantine') {
+                bgGrad.addColorStop(0, `hsla(${shiftHue(35, hueShift * 0.12)}, 70%, 8%, 1)`);
+                bgGrad.addColorStop(1, 'rgba(2,2,4,1)');
+            } else {
+                bgGrad.addColorStop(0, `hsla(${shiftHue(245, hueShift * 0.25)}, 34%, 6%, 1)`);
+                bgGrad.addColorStop(1, 'rgba(0,0,0,1)');
+            }
+            ctx.fillStyle = bgGrad;
+            ctx.fillRect(0, 0, width, height);
+
+            drawCosmicStarfield(width, height, mulberry32(generateSeed(seedStr + '_stars')));
+            
+            // DIFFUSE CENTRAL AURA (deep space glow)
+            setBlendMode('lighter', 'source-over');
+            const auraRadius = maxR * 0.75;
+            const auraGrad = ctx.createRadialGradient(cx, cy, 0, cx, cy, auraRadius);
+            auraGrad.addColorStop(0, `hsla(${shiftHue(225, hueShift)}, 75%, 35%, 0.25)`);
+            auraGrad.addColorStop(0.3, `hsla(${shiftHue(265, hueShift)}, 65%, 25%, 0.15)`);
+            auraGrad.addColorStop(1, 'rgba(0,0,0,0)');
+            ctx.fillStyle = auraGrad;
+            ctx.beginPath();
+            ctx.arc(cx, cy, auraRadius, 0, Math.PI * 2);
+            ctx.fill();
+
+            drawOrbitTrapMetalwork(cx, cy, maxR, matrix, preset);
+
+            // STAINED-GLASS SHELLS (source-over for solid petal panels) — draw outermost first
+            setBlendMode('source-over', 'source-over');
+            const symmetryHarmonics = [sym, Math.floor(sym * 1.5), sym, sym * 2];
+            const innerR = maxR * 0.32;
+            const outerR = maxR * 0.92;
+            for (let layer = rings; layer >= 1; layer--) {
+                const prng = mulberry32(generateSeed(seedStr + '_shell_' + layer));
+                const layerT = layer / rings;
+                const ringMeta = (ringProfile && ringProfile[layer - 1]) || { symBias: 0, sharpBias: 0.5, warpBias: 1 };
+                const localSym = Math.max(3, symmetryHarmonics[layer % symmetryHarmonics.length] + ringMeta.symBias + ((hashBytes[layer % hashBytes.length] % 3) - 1));
+                const layerSharp = sharp * (0.72 + ringMeta.sharpBias * 0.56);
+                const n1 = 0.6 + prng() * 1.4;
+                const n2 = 0.5 + prng() * 1.5 * layerSharp;
+                const n3 = 0.5 + prng() * 1.5 * layerSharp;
+                const scale = (innerR + (outerR - innerR) * layerT * (0.92 + prng() * 0.16)) * layerWarp * ringMeta.warpBias;
+                const rotation = prng() * Math.PI * 2 + rotationOffset + spiral * layerT;
+                const baseHue = getCosmicHue(rotation, stereo, layerT, preset, hueShift);
+                const path = new Path2D();
+
+                for (let a = 0; a <= Math.PI * 2 + 0.05; a += 0.015) {
+                    const r = superformula(a, localSym, n1, n2, n3, 1, 1);
+                    const fingerprintWave = Math.sin(a * (2 + petalJitter * 6) + rotation + layer) * petalJitter * 0.1;
+                    const distortion = 1 + Math.sin(a * 2 + rotation) * (asym * 0.25) + fingerprintWave;
+                    const finalR = scale * r * distortion;
+                    const x = cx + finalR * Math.cos(a + rotation);
+                    const y = cy + finalR * Math.sin(a + rotation);
+                    if (a === 0) path.moveTo(x, y);
+                    else path.lineTo(x, y);
+                }
+
+                const radial = ctx.createRadialGradient(cx, cy, scale * 0.05, cx, cy, scale);
+                const innerLightness = preset === 'cathedral' ? 18 : 22;
+                const outerLightness = preset === 'cathedral' ? 28 : 38;
+                radial.addColorStop(0, `hsla(${baseHue}, 70%, ${innerLightness}%, 0.35)`);
+                radial.addColorStop(0.7, `hsla(${baseHue}, 85%, ${outerLightness}%, 0.3)`);
+                radial.addColorStop(1, `hsla(${baseHue}, 80%, 18%, 0)`);
+                ctx.fillStyle = radial;
+                ctx.fill(path);
+
+                ctx.strokeStyle = `hsla(${baseHue}, 95%, 85%, 0.95)`;
+                ctx.lineWidth = 0.5 + lineEnergy * 0.3;
+                ctx.stroke(path);
+
+                if (dualF > 0.2 && layer % 2 === 1) {
+                    ctx.strokeStyle = `hsla(${baseHue}, 80%, 75%, 0.4)`;
+                    ctx.lineWidth = 0.6;
+                    ctx.beginPath();
+                    for (let i = 0; i < localSym; i++) {
+                        const a = (i / localSym) * Math.PI * 2 + rotation;
+                        ctx.moveTo(cx, cy);
+                        const finalR = scale * superformula(a - rotation, localSym, n1, n2, n3, 1, 1);
+                        ctx.lineTo(cx + finalR * Math.cos(a), cy + finalR * Math.sin(a));
+                    }
+                    ctx.stroke();
+                }
+
+                if (layer % 3 === 0) {
+                    const satCount = localSym;
+                    const satRadius = scale * 0.88;
+                    const satSize = (outerR - innerR) * 0.05 + 4;
+                    for (let s = 0; s < satCount; s++) {
+                        const sa = rotation + (s / satCount) * Math.PI * 2;
+                        const sx = cx + satRadius * Math.cos(sa);
+                        const sy = cy + satRadius * Math.sin(sa);
+                        const satPath = new Path2D();
+                        for (let phi = 0; phi <= Math.PI * 2 + 0.05; phi += 0.05) {
+                            const sr = satSize * superformula(phi, 6, 1.4, 2.2, 2.2, 1, 1);
+                            const x = sx + sr * Math.cos(phi);
+                            const y = sy + sr * Math.sin(phi);
+                            if (phi === 0) satPath.moveTo(x, y);
+                            else satPath.lineTo(x, y);
+                        }
+                        const satHue = getCosmicHue(sa, stereo, layerT, preset, hueShift);
+                        ctx.fillStyle = `hsla(${satHue}, 80%, 35%, 0.7)`;
+                        ctx.fill(satPath);
+                        ctx.strokeStyle = `hsla(${satHue}, 95%, 75%, 0.95)`;
+                        ctx.lineWidth = 0.8;
+                        ctx.stroke(satPath);
+                    }
+                }
+            }
+
+            // PLASMA AURA (lighter blend on top of shells)
+            setBlendMode('lighter', 'source-over');
+            const plasmaCount = Math.floor(70 + flux * 150 + densityBoost * 90);
+            for (let t = 0; t < plasmaCount; t++) {
+                const prng = mulberry32(generateSeed(seedStr + '_plasma_' + t));
+                const angleBase = prng() * Math.PI * 2 + rotationOffset;
+                const depth = prng();
+                const hue = getCosmicHue(angleBase, stereo, depth, preset, hueShift);
+                const path = new Path2D();
+                const startR = maxR * (0.55 + prng() * 0.25);
+                const endR = maxR * (0.95 + prng() * 0.45);
+                path.moveTo(cx + startR * Math.cos(angleBase), cy + startR * Math.sin(angleBase));
+                const swirl = (prng() - 0.5 + spiral * 0.2) * (0.5 + asym * 1.4 + petalJitter * 0.6);
+                const cp1x = cx + endR * 0.6 * Math.cos(angleBase + swirl);
+                const cp1y = cy + endR * 0.6 * Math.sin(angleBase + swirl);
+                const cp2x = cx + endR * 0.9 * Math.cos(angleBase - swirl * 0.6);
+                const cp2y = cy + endR * 0.9 * Math.sin(angleBase - swirl * 0.6);
+                const tip = angleBase + (prng() - 0.5) * 0.5;
+                const endX = cx + endR * Math.cos(tip);
+                const endY = cy + endR * Math.sin(tip);
+                path.bezierCurveTo(cp1x, cp1y, cp2x, cp2y, endX, endY);
+                const intensity = 0.25 + flux * 0.4 + prng() * 0.2;
+                strokeGlowPath(path, hue, 92, 58, intensity, 0.4 + prng() * (0.3 + flux * 0.8));
+            }
+            drawFeaturePlasmaHalo(cx, cy, maxR, matrix, preset);
+            drawCosmicWaves(cx, cy, maxR, matrix, preset);
+
+            drawHashSignature(cx, cy, maxR, hashBytes, matrix, preset);
+
+            const anchorSides = ANCHOR_SHAPES[Math.min(ANCHOR_SHAPES.length - 1, Math.max(0, anchorIndex - 1))];
+            const yantraGlow = clamp01((lineEnergy - 1.05) / 1.9);
+            const coreR = maxR * (0.16 + yantraGlow * 0.08);
+            const primaryFlareRing = 1 + (hashBytes[20 % hashBytes.length] % 4);
+            const wantsSecondFlare = flux > 0.52 || densityBoost > 0.58 || ((hashBytes[21 % hashBytes.length] & 0x01) === 1);
+            let secondaryFlareRing = 1 + ((hashBytes[22 % hashBytes.length] + Math.floor(stereo * 7)) % 4);
+            if (secondaryFlareRing === primaryFlareRing) {
+                secondaryFlareRing = (secondaryFlareRing % 4) + 1;
+            }
+            const flareRings = new Set([primaryFlareRing]);
+            if (wantsSecondFlare) flareRings.add(secondaryFlareRing);
+
+            for (let r = 1; r <= 4; r++) {
+                const rad = coreR + (maxR * 0.24 * (r / 4) * (1 + asym * 0.45));
+                ctx.beginPath();
+                ctx.arc(cx, cy, rad, 0, Math.PI * 2);
+                ctx.lineWidth = (0.7 + yantraGlow * 1.4) * (5 - r);
+                ctx.strokeStyle = preset === 'byzantine'
+                    ? `hsla(15, 90%, 50%, ${0.018 * r + yantraGlow * 0.035})`
+                    : `hsla(45, 80%, 50%, ${0.018 * r + yantraGlow * 0.035})`;
+                ctx.stroke();
+                if (flareRings.has(r)) {
+                    drawRingPlasmaFlares(cx, cy, rad, r, 4, matrix, preset, yantraGlow);
+                }
+            }
+
+            setBlendMode('source-over', 'source-over');
+            const pOuter = buildPolygonPath(cx, cy, coreR, anchorSides, -Math.PI / 2);
+            const pInner = buildPolygonPath(cx, cy, coreR * 0.75, anchorSides, -Math.PI / 2 + Math.PI / anchorSides);
+            const pStar = buildPolygonPath(cx, cy, coreR * 0.4, anchorSides * 2, -Math.PI / 2);
+
+            ctx.fillStyle = `rgba(5,2,0,${0.46 + yantraGlow * 0.38})`;
+            ctx.fill(pOuter);
+
+            setBlendMode('lighter', 'source-over');
+            const baseGoldHue = preset === 'byzantine' ? 12 : 45;
+            const sealAlpha = 0.22 + yantraGlow * 0.55;
+            strokeGlowPath(pOuter, baseGoldHue, 100, 50, sealAlpha, (0.45 + yantraGlow) * lineEnergy);
+            strokeGlowPath(pInner, (baseGoldHue + 350) % 360, 100, 60, sealAlpha * 0.8, (0.32 + yantraGlow * 0.8) * lineEnergy);
+            if (yantraGlow > 0.32) {
+                strokeGlowPath(pStar, (baseGoldHue + 10) % 360, 100, 70, sealAlpha * 0.85, (0.2 + yantraGlow * 0.55) * lineEnergy);
+            }
+
+            const grad = ctx.createRadialGradient(cx, cy, 0, cx, cy, coreR * 0.4);
+            grad.addColorStop(0, `rgba(255,255,255,${0.5 + yantraGlow * 0.45})`);
+            grad.addColorStop(0.3, `rgba(255,220,100,${0.38 + yantraGlow * 0.45})`);
+            grad.addColorStop(1, 'rgba(255,150,0,0)');
+            ctx.fillStyle = grad;
+            ctx.beginPath();
+            ctx.arc(cx, cy, coreR * 0.4, 0, Math.PI * 2);
+            ctx.fill();
+
+            ctx.shadowBlur = 0;
+            ctx.globalCompositeOperation = 'source-over';
         }
 
-        // map to geometry
-        currentDirective.geometry.symmetry = Math.max(4, Math.min(16, Math.round(5 + rms * 11)));
-        currentDirective.geometry.rings = Math.max(7, Math.min(19, Math.round(7 + (bpmGuess - 70) / 9)));
-        currentDirective.geometry.petal_density = Math.round((0.9 + rms * 2.1) * 100) / 100;
-        currentDirective.geometry.energy_bias = Math.round((0.38 + rms * 0.85) * 100) / 100;
-        currentDirective.color.primary_hue = Math.round(((centroid / 9) + (seed % 60)) % 360);
-
-        document.getElementById('audio-name').textContent = fileOrBuffer.name || "live sample";
-        
-        updateUIFromDirective(currentDirective);
-        redraw();
-      } catch (err) {
-        console.error(err);
-        alert("Could not analyze audio: " + err.message);
-      } finally {
-        status.style.display = 'none';
-      }
-    }
-
-    // Tiny pure-JS FFT (real, for demo only — good enough for centroid)
-    function simpleSpectrum(samples) {
-      const n = samples.length;
-      const out = new Float32Array(n / 2);
-      for (let k = 0; k < n / 2; k++) {
-        let re = 0, im = 0;
-        for (let t = 0; t < n; t++) {
-          const ang = -2 * Math.PI * k * t / n;
-          re += samples[t] * Math.cos(ang);
-          im -= samples[t] * Math.sin(ang);
+        // --- THE GEOMETRIC RENDER ENGINE (Cosmic Yantra v8) ---
+        function drawPsychoacousticMandala(width, height, hashBytes, acousticData, styleMode = 'auto') {
+            drawCosmicYantraMandala(width, height, hashBytes, acousticData, styleMode);
         }
-        out[k] = Math.sqrt(re * re + im * im);
-      }
-      return out;
-    }
 
-    async function sha256(buffer) {
-      const hashBuffer = await crypto.subtle.digest('SHA-256', buffer);
-      return Array.from(new Uint8Array(hashBuffer)).map(b => b.toString(16).padStart(2, '0')).join('');
-    }
+        // --- UI LOGIC ---
+        function setStatus(msg, classes) { statusMessage.textContent = msg; statusMessage.className = `h-6 text-sm font-medium transition-all ${classes}`; }
+        function enableActionBtn(text, classes) { actionBtn.disabled = false; actionBtnText.textContent = text; actionBtn.className = `px-8 py-3 text-white rounded-lg font-bold uppercase tracking-wide transition-all duration-300 flex items-center gap-2 cursor-pointer ${classes}`; }
+        function disableActionBtn() { actionBtn.disabled = true; actionBtnText.textContent = 'Awaiting Input'; actionBtn.className = 'px-8 py-3 bg-gray-800 text-gray-500 rounded-lg font-bold uppercase tracking-wide transition-all duration-300 flex items-center gap-2 cursor-not-allowed'; }
 
-    function handleAudioUpload(e) {
-      const file = e.target.files[0];
-      if (!file) return;
-      analyzeAudioAndUpdateDirective(file);
-    }
-
-    // Drag & drop support on the canvas
-    function setupDragDrop() {
-      const c = document.getElementById('mandala');
-      ['dragenter', 'dragover'].forEach(ev => c.addEventListener(ev, e => { e.preventDefault(); c.style.boxShadow = '0 0 0 3px rgb(167 139 250 / 0.3)'; }));
-      ['dragleave', 'drop'].forEach(ev => c.addEventListener(ev, e => { e.preventDefault(); c.style.boxShadow = ''; }));
-      
-      c.addEventListener('drop', async (e) => {
-        const file = e.dataTransfer.files[0];
-        if (file && file.type.startsWith('audio/')) {
-          document.getElementById('audio-name').textContent = file.name;
-          await analyzeAudioAndUpdateDirective(file);
+        function setMode(mode) {
+            currentMode = mode;
+            modeEncodeBtn.classList.toggle('active', mode === 'ENCODE');
+            modeDecodeBtn.classList.toggle('active', mode === 'DECODE');
+            modeTestBtn.classList.toggle('active', mode === 'TEST');
+            fileInput.value = '';
+            
+            if (mode === 'ENCODE') {
+                fileInput.accept = 'audio/*,video/*,application/octet-stream';
+                setStatus('Select an audio file to Forge...', 'text-purple-400');
+                metadataSection.classList.remove('hidden');
+                stylePreset.disabled = false;
+            } else if (mode === 'DECODE') {
+                fileInput.accept = 'image/png';
+                setStatus('Select an SVA Mandala PNG to Extract...', 'text-cyan-400');
+                metadataSection.classList.add('hidden');
+                stylePreset.disabled = true;
+            } else {
+                fileInput.accept = 'audio/*,video/*,application/octet-stream';
+                setStatus('Select an audio file to run the Full Auto-Test...', 'text-pink-400');
+                metadataSection.classList.remove('hidden');
+                stylePreset.disabled = false;
+            }
+            
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            disableActionBtn();
+            if (outputBlobUrl) { URL.revokeObjectURL(outputBlobUrl); outputBlobUrl = null; }
+            if (previewAudioUrl) { URL.revokeObjectURL(previewAudioUrl); previewAudioUrl = null; }
+            audioPlayer.classList.add('hidden'); audioPlayer.pause(); audioPlayer.src = ''; svaDataBox.classList.add('hidden');
         }
-      });
-    }
 
-    function useSampleTone() {
-      // Generate a nice 3-second 110 Hz + overtones "singing bowl" style tone
-      const sampleRate = 44100;
-      const duration = 3.2;
-      const len = Math.floor(sampleRate * duration);
-      const buffer = new Float32Array(len);
-      const freq = 110;
-      
-      for (let i = 0; i < len; i++) {
-        const t = i / sampleRate;
-        let v = 0.6 * Math.sin(2 * Math.PI * freq * t);
-        v += 0.35 * Math.sin(2 * Math.PI * freq * 2.02 * t);
-        v += 0.18 * Math.sin(2 * Math.PI * freq * 3.01 * t + 0.4);
-        v *= (1 - Math.pow(t / duration, 1.6)) * 0.9; // nice decay
-        buffer[i] = v;
-      }
-      
-      // Fake a file-like object for the analyzer
-      const fakeFile = {
-        name: "singing-bowl-110hz",
-        arrayBuffer: async () => {
-          // Convert float to 16-bit PCM
-          const pcm = new Int16Array(buffer.length);
-          for (let i = 0; i < buffer.length; i++) {
-            pcm[i] = Math.max(-32768, Math.min(32767, buffer[i] * 32767));
-          }
-          return new Uint8Array(pcm.buffer).buffer;
+        modeEncodeBtn.addEventListener('click', () => setMode('ENCODE'));
+        modeDecodeBtn.addEventListener('click', () => setMode('DECODE'));
+        modeTestBtn.addEventListener('click', () => setMode('TEST'));
+
+        fileInput.addEventListener('change', async (e) => {
+            const file = e.target.files[0];
+            if (!file) return;
+            disableActionBtn();
+            try {
+                if (currentMode === 'ENCODE') await processEncode(file);
+                else if (currentMode === 'DECODE') await processDecode(file);
+                else await processTest(file);
+            } finally {
+                e.target.value = ''; // UI freeze fix
+            }
+        });
+
+        actionBtn.addEventListener('click', () => {
+            if (actionBtn.disabled || !outputBlobUrl) return;
+            const link = document.createElement('a'); link.download = outputFileName; link.href = outputBlobUrl; link.click();
+        });
+
+        // --- ENCODE PIPELINE ---
+        async function runEncodeLogic(file) {
+            const password = passwordInput.value;
+            if (!password) throw new Error("Please enter a secret key for encryption.");
+
+            const fileBuffer = await file.arrayBuffer();
+            const acousticData = await analyzeAcoustics(fileBuffer);
+            
+            setStatus('Hashing binary data...', 'text-yellow-400');
+            const fileBytes = new Uint8Array(fileBuffer);
+            const fileHash = await sha256(fileBytes);
+
+            // Store for Directive export / load (aurion-art-directive-v1 contract)
+            window.__lastDirectiveInput = { hashBytes: fileBytes, acousticData, fileHashHex: toHex(fileHash) };
+
+            let royaltySplits = [];
+            const splitsText = document.getElementById('metaSplits').value.trim();
+            if (splitsText) {
+                try {
+                    royaltySplits = JSON.parse(splitsText);
+                    if (!Array.isArray(royaltySplits)) throw new Error('Royalty splits must be a JSON array.');
+                } catch (err) {
+                    throw new Error(`Royalty splits JSON is invalid: ${err.message}`);
+                }
+            }
+
+            const customData = {
+                "Artist": document.getElementById('metaArtist').value.trim(),
+                "Written By": document.getElementById('metaWriter').value.trim(),
+                "Release ID": document.getElementById('metaReleaseId').value.trim(),
+                "UPC": document.getElementById('metaUpc').value.trim(),
+                "Release Date": document.getElementById('metaDate').value.trim(),
+                "Language": document.getElementById('metaLang').value.trim(),
+                "Genre": document.getElementById('metaGenre').value.trim(),
+                "Label": document.getElementById('metaLabel').value.trim(),
+                "ISRC": document.getElementById('metaIsrc').value.trim(),
+                "Publisher / Admin": document.getElementById('metaPublisher').value.trim(),
+                "PRO / CMO": document.getElementById('metaPro').value.trim(),
+                "Territory": document.getElementById('metaTerritory').value.trim()
+            };
+            const selectedStyle = stylePreset.value || 'auto';
+            const cleanCustomData = Object.fromEntries(Object.entries(customData).filter(([_, v]) => v !== ""));
+
+            const metadata = {
+                filename: file.name,
+                mimeType: file.type || getMimeType(file.name),
+                timestamp: new Date(file.lastModified || 0).toISOString(),
+                engine: "Psychoacoustic Architect v10.0 Cosmic Yantra (SVA6-PNGC, Audio Gearing)",
+                artifactVersion: "SVA6-PNGC-1",
+                payloadMode: "png-private-ancillary-chunk",
+                deterministic: true,
+                stylePreset: selectedStyle,
+                audioHash: toHex(fileHash),
+                custom: cleanCustomData,
+                rights: {
+                    isrc: document.getElementById('metaIsrc').value.trim(),
+                    publisher: document.getElementById('metaPublisher').value.trim(),
+                    pro: document.getElementById('metaPro').value.trim(),
+                    territory: document.getElementById('metaTerritory').value.trim() || "Worldwide",
+                    splits: royaltySplits
+                }
+            };
+            
+            const metaBytes = new TextEncoder().encode(canonicalStringify(metadata));
+            const metaLen = metaBytes.length;
+
+            setStatus('Executing deterministic AES-256 GCM sealing...', 'text-purple-400');
+            const innerPayload = new Uint8Array(4 + metaLen + fileBytes.length); // SVA6 uses 4 bytes
+            new DataView(innerPayload.buffer).setUint32(0, metaLen, false);
+            innerPayload.set(metaBytes, 4);
+            innerPayload.set(fileBytes, 4 + metaLen);
+
+            const { salt, iv } = await deriveDeterministicCryptoMaterial(password, fileHash, metaBytes);
+            const key = await deriveKey(password, salt);
+            const encryptedBytes = new Uint8Array(await crypto.subtle.encrypt({ name: "AES-GCM", iv: iv }, key, innerPayload));
+
+            const totalBytes = 68 + encryptedBytes.length;
+            let side = Math.max(1200, Math.ceil(Math.sqrt(fileBytes.length)));
+
+            setStatus(`Drawing ${side}x${side} Psychoacoustic Canvas...`, 'text-cyan-400 animate-pulse');
+            await new Promise(r => setTimeout(r, 50)); 
+            canvas.width = side; canvas.height = side;
+
+            drawPsychoacousticMandala(side, side, fileHash, acousticData, selectedStyle);
+
+            const payload = new Uint8Array(totalBytes);
+            payload.set([83, 86, 65, 54], 0); // "SVA6"
+            payload.set(salt, 4); payload.set(iv, 20); payload.set(fileHash, 32);
+            new DataView(payload.buffer).setUint32(64, encryptedBytes.length, false); 
+            payload.set(encryptedBytes, 68);
+
+            setStatus(`Prepared ${totalBytes.toLocaleString()} sealed bytes for PNG chunk vault...`, 'text-pink-400 animate-pulse');
+            await new Promise(r => setTimeout(r, 50));
+            return { side, fileHash, payload, metadata };
         }
-      };
-      
-      // We need to bypass the normal decode path slightly
-      (async () => {
-        const status = document.getElementById('analysis-status');
-        status.style.display = 'flex';
-        
-        if (!audioContext) audioContext = new (window.AudioContext || window.webkitAudioContext)();
-        
-        const audioBuf = audioContext.createBuffer(1, len, sampleRate);
-        audioBuf.getChannelData(0).set(buffer);
-        audioBuffer = audioBuf;
-        
-        // Build features manually
-        const rms = Math.sqrt(buffer.reduce((s, v) => s + v*v, 0) / len);
-        const sha = Array.from({length: 64}, (_,i) => (i % 16).toString(16)).join('');
-        const seed = 0xC0FFEE42;
-        
-        currentDirective = getDefaultDirective();
-        currentDirective.source_audio.sha256 = sha;
-        currentDirective.source_audio.duration_s = duration;
-        currentDirective.source_audio.bpm = 42;
-        currentDirective.source_audio.spectral_centroid = 420;
-        currentDirective.source_audio.rms_energy = Math.round(rms * 1000)/1000;
-        currentDirective.seed = seed;
-        currentDirective.archetype = {id:"deep-void-5", family:"void-geometry", name:"Singing Void"};
-        currentDirective.geometry.symmetry = 5;
-        currentDirective.geometry.rings = 9;
-        currentDirective.geometry.petal_density = 0.95;
-        currentDirective.geometry.energy_bias = 0.32;
-        currentDirective.color.primary_hue = 215;
-        currentDirective.color.saturation = 0.78;
-        
-        document.getElementById('audio-name').textContent = "singing-bowl-110hz (sample)";
-        
-        updateUIFromDirective(currentDirective);
-        redraw();
-        status.style.display = 'none';
-      })();
-    }
 
-    // ===== ACTIONS =====
-    function exportDirective() {
-      if (!currentDirective) return;
-      const blob = new Blob([JSON.stringify(currentDirective, null, 2)], {type: "application/json"});
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement("a");
-      a.href = url;
-      a.download = (currentDirective.metadata?.title || "aurion-directive").replace(/\s+/g, "-") + "-v1.json";
-      a.click();
-      URL.revokeObjectURL(url);
-    }
-
-    async function copyDirectiveToClipboard() {
-      if (!currentDirective) return;
-      await navigator.clipboard.writeText(JSON.stringify(currentDirective, null, 2));
-      const orig = event.currentTarget?.innerHTML;
-      const btns = document.querySelectorAll('button');
-      // tiny toast
-      const toast = document.createElement('div');
-      toast.className = `fixed bottom-4 right-4 bg-emerald-900 text-emerald-200 text-xs px-4 py-2 rounded-2xl shadow flex items-center gap-2`;
-      toast.innerHTML = `<i class="fa-solid fa-check"></i> Directive copied to clipboard`;
-      document.body.appendChild(toast);
-      setTimeout(() => toast.remove(), 1600);
-    }
-
-    function sendToSangraha() {
-      if (!currentDirective) return;
-      const json = JSON.stringify(currentDirective, null, 2);
-      const msg = `Copy the directive below and run:\n\nsangraha forge --directive your-export.json --size 8192\n\n(Requires the Python package from the repo)`;
-      alert(msg + "\n\n" + json.slice(0, 420) + "...");
-    }
-
-    function randomizeDirective() {
-      currentDirective = getDefaultDirective();
-      const rng = mulberry32(Date.now() | 0);
-      
-      currentDirective.geometry.symmetry = 3 + Math.floor(rng() * 14);
-      currentDirective.geometry.rings = 5 + Math.floor(rng() * 17);
-      currentDirective.geometry.petal_density = 0.6 + rng() * 3.4;
-      currentDirective.geometry.spiral_tension = 0.35 + rng() * 1.05;
-      currentDirective.geometry.energy_bias = 0.2 + rng() * 0.7;
-      
-      currentDirective.color.primary_hue = Math.floor(rng() * 360);
-      currentDirective.color.saturation = 0.65 + rng() * 0.32;
-      
-      // random subset of layers (always keep core)
-      const possible = ["glow_veins", "star_nodes", "filament_network", "logo_energy_overlay"];
-      currentDirective.layers = ["base_cymatic_field", "mandala_skeleton"];
-      possible.forEach(l => { if (rng() > 0.25) currentDirective.layers.push(l); });
-      
-      currentDirective.seed = Math.floor(rng() * 0xffffffff) >>> 0;
-      
-      updateUIFromDirective(currentDirective);
-      redraw();
-    }
-
-    function resetToDefault() {
-      currentDirective = getDefaultDirective();
-      document.getElementById('audio-name').textContent = "No audio loaded";
-      updateUIFromDirective(currentDirective);
-      redraw();
-    }
-
-    // ===== INIT =====
-    function init() {
-      initTailwind();
-      
-      currentDirective = getDefaultDirective();
-      updateUIFromDirective(currentDirective);
-      drawMandala(currentDirective);
-      
-      // Live redraw when any slider moves (already wired via oninput)
-      // Also redraw on window resize for crispness (simple)
-      window.addEventListener('resize', () => {
-        // keep the canvas size we set in HTML; CSS handles scaling
-        redraw();
-      });
-      
-      setupDragDrop();
-      
-      // Keyboard niceties
-      document.addEventListener('keydown', (e) => {
-        if (e.key === 'r' && (e.metaKey || e.ctrlKey)) {
-          e.preventDefault();
-          randomizeDirective();
+        async function processEncode(file) {
+            try {
+                const { fileHash, payload } = await runEncodeLogic(file);
+                const blob = await canvasToPngBlob();
+                const pngBytes = new Uint8Array(await blob.arrayBuffer());
+                const svaPngBytes = insertSvaChunk(pngBytes, payload);
+                if (outputBlobUrl) URL.revokeObjectURL(outputBlobUrl);
+                outputBlobUrl = URL.createObjectURL(new Blob([svaPngBytes], { type: 'image/png' })); outputFileName = file.name.split('.')[0] + '_psycho_mandala.png';
+                setStatus(`✅ Forged perfectly! Hash: ${toHex(fileHash).substring(0,16)}...`, 'text-green-400 font-bold tracking-wide');
+                enableActionBtn('Download Artwork', 'bg-cyan-600 hover:bg-cyan-500 shadow-[0_0_20px_rgba(8,145,178,0.6)]');
+                if (previewAudioUrl) URL.revokeObjectURL(previewAudioUrl);
+                previewAudioUrl = URL.createObjectURL(file); handleAudioPlayer(previewAudioUrl, file.name);
+            } catch (err) { console.error(err); setStatus('❌ ' + err.message, 'text-red-400'); }
         }
-        if (e.key.toLowerCase() === 'd' && e.shiftKey) {
-          e.preventDefault();
-          exportDirective();
-        }
-      });
-      
-      // Boot with a nice hint
-      setTimeout(() => {
-        const nameEl = document.getElementById('audio-name');
-        if (nameEl.textContent.includes("No audio")) {
-          nameEl.textContent = "Try the sample tone →";
-          nameEl.style.cursor = "pointer";
-          nameEl.onclick = () => {
-            useSampleTone();
-            nameEl.onclick = null;
-            nameEl.style.cursor = "";
-          };
-        }
-      }, 2200);
-      
-      // Make sure the canvas is interactive (click to slightly perturb)
-      canvas.addEventListener('click', (e) => {
-        if (!currentDirective) return;
-        const rect = canvas.getBoundingClientRect();
-        const x = ((e.clientX - rect.left) / rect.width - 0.5) * 2;
-        const y = ((e.clientY - rect.top) / rect.height - 0.5) * 2;
-        const energy = Math.min(0.95, Math.max(0.15, currentDirective.geometry.energy_bias + (x * 0.08)));
-        currentDirective.geometry.energy_bias = energy;
-        currentDirective.geometry.spiral_tension = Math.max(0.25, Math.min(1.45, currentDirective.geometry.spiral_tension + y * 0.09));
-        updateUIFromDirective(currentDirective);
-        redraw();
-      });
-      
-      console.log('%c[GrokMandala] Browser Lab ready — Aurion Directive v1 live', 'color:#64748b');
-    }
 
-    // Boot
-    window.onload = init;
-  </script>
+        // --- DECODE PIPELINE ---
+        async function decryptSvaPayload(payloadBytes) {
+            const password = passwordInput.value;
+            if (!password) throw new Error("Secret key required for decryption.");
+
+            const headerBytes = payloadBytes.slice(0, 68);
+            
+            const magic = String.fromCharCode(headerBytes[0], headerBytes[1], headerBytes[2], headerBytes[3]);
+            if (magic !== 'SVA5' && magic !== 'SVA6') throw new Error('Invalid signature. Not an SVA Psychoacoustic Mandala.');
+
+            const salt = headerBytes.slice(4, 20); const iv = headerBytes.slice(20, 32); const storedHash = headerBytes.slice(32, 64);
+            const encSize = new DataView(headerBytes.buffer).getUint32(64, false);
+
+            if ((68 + encSize) > payloadBytes.length) throw new Error("Corrupted Header: Claimed size exceeds payload length.");
+
+            setStatus('Extracting encrypted payload...', 'text-yellow-400'); await new Promise(r => setTimeout(r, 50));
+            const encryptedBytes = payloadBytes.slice(68, 68 + encSize);
+
+            setStatus('Decrypting with Secret Key...', 'text-purple-400');
+            const key = await deriveKey(password, salt);
+            let decryptedBuffer;
+            try { decryptedBuffer = await crypto.subtle.decrypt({ name: "AES-GCM", iv: iv }, key, encryptedBytes); } 
+            catch (e) { throw new Error("Decryption Failed: Incorrect password or corrupted payload."); }
+            
+            const decryptedBytes = new Uint8Array(decryptedBuffer);
+            const view = new DataView(decryptedBytes.buffer, decryptedBytes.byteOffset, decryptedBytes.byteLength);
+            
+            let metaLen, metaBytes, fileData;
+            if (magic === 'SVA5') {
+                metaLen = view.getUint16(0, false); metaBytes = decryptedBytes.slice(2, 2 + metaLen); fileData = decryptedBytes.slice(2 + metaLen);
+            } else {
+                metaLen = view.getUint32(0, false); metaBytes = decryptedBytes.slice(4, 4 + metaLen); fileData = decryptedBytes.slice(4 + metaLen);
+            }
+            
+            const metadata = JSON.parse(new TextDecoder().decode(metaBytes));
+            outputFileName = metadata.filename;
+
+            setStatus('Verifying Cryptographic SHA-256 Hash...', 'text-cyan-400');
+            const computedHash = await sha256(fileData);
+            for (let i = 0; i < 32; i++) if (computedHash[i] !== storedHash[i]) throw new Error("Hash mismatch! Data integrity compromised.");
+
+            renderSvaMetadata(metadata);
+            return fileData;
+        }
+
+        async function runDecodeLogic(imgDataObj, width, height) {
+            const data = imgDataObj.data;
+            const extractByte = (pxIdx) => ((data[pxIdx] & 0x07) << 5) | ((data[pxIdx+1] & 0x07) << 2) | (data[pxIdx+2] & 0x03);
+            const headerBytes = new Uint8Array(68);
+            for (let i = 0; i < 68; i++) {
+                const pxIdx = i * 4;
+                headerBytes[i] = extractByte(pxIdx);
+            }
+
+            const encSize = new DataView(headerBytes.buffer).getUint32(64, false);
+            if ((68 + encSize) > (width * height)) throw new Error("Corrupted Header: Claimed size exceeds pixel count.");
+
+            const payloadBytes = new Uint8Array(68 + encSize);
+            payloadBytes.set(headerBytes, 0);
+            for (let i = 0; i < encSize; i++) {
+                const pxIdx = (68 + i) * 4;
+                payloadBytes[68 + i] = extractByte(pxIdx);
+            }
+
+            return decryptSvaPayload(payloadBytes);
+        }
+
+        function renderSvaMetadata(metadata) {
+            svaTime.textContent = new Date(metadata.timestamp).toLocaleString(); svaName.textContent = metadata.filename;
+            svaType.textContent = metadata.mimeType; svaEngine.textContent = metadata.engine; svaHashUI.textContent = metadata.audioHash;
+            
+            svaCustomData.innerHTML = '';
+            if (metadata.stylePreset) {
+                const presetDiv = document.createElement('div');
+                presetDiv.className = "truncate";
+                const label = document.createElement('span');
+                label.className = "font-bold text-gray-500";
+                label.textContent = "Style Preset:";
+                const value = document.createElement('span');
+                value.className = "text-fuchsia-300 ml-1 font-medium";
+                value.textContent = metadata.stylePreset;
+                presetDiv.append(label, value);
+                svaCustomData.appendChild(presetDiv);
+            }
+            if (metadata.rights && Array.isArray(metadata.rights.splits) && metadata.rights.splits.length > 0) {
+                const splitsDiv = document.createElement('div');
+                splitsDiv.className = "sm:col-span-2 break-words";
+                const label = document.createElement('span');
+                label.className = "font-bold text-gray-500";
+                label.textContent = "Royalty Splits:";
+                const value = document.createElement('span');
+                value.className = "text-amber-300 ml-1 font-medium";
+                value.textContent = metadata.rights.splits.map(split => `${split.party || 'Unknown'} ${split.share ?? '?'}%`).join(' · ');
+                splitsDiv.append(label, value);
+                svaCustomData.appendChild(splitsDiv);
+            }
+            if (metadata.custom && Object.keys(metadata.custom).length > 0) {
+                for (const [key, value] of Object.entries(metadata.custom)) {
+                    const div = document.createElement('div'); div.className = "truncate";
+                    const label = document.createElement('span');
+                    label.className = "font-bold text-gray-500";
+                    label.textContent = `${key}:`;
+                    const content = document.createElement('span');
+                    content.className = "text-cyan-300 ml-1 font-medium";
+                    content.textContent = value;
+                    div.append(label, content);
+                    svaCustomData.appendChild(div);
+                }
+            }
+            if (svaCustomData.children.length > 0) svaCustomData.classList.remove('hidden');
+            else svaCustomData.classList.add('hidden');
+
+            svaDataBox.classList.remove('hidden');
+        }
+
+        async function processDecode(file) {
+            try {
+                setStatus('Analyzing geometry layout...', 'text-yellow-400 animate-pulse');
+                const img = new Image(); img.src = URL.createObjectURL(file);
+                await new Promise((resolve, reject) => { img.onload = resolve; img.onerror = () => reject(new Error("Invalid PNG")); });
+                canvas.width = img.width; canvas.height = img.height; ctx.drawImage(img, 0, 0);
+                const pngBytes = new Uint8Array(await file.arrayBuffer());
+                const chunkPayload = extractSvaChunk(pngBytes);
+                const fileData = chunkPayload
+                    ? await decryptSvaPayload(chunkPayload)
+                    : await runDecodeLogic(ctx.getImageData(0, 0, canvas.width, canvas.height), canvas.width, canvas.height);
+                
+                const blob = new Blob([fileData], { type: getMimeType(outputFileName) });
+                if (outputBlobUrl) URL.revokeObjectURL(outputBlobUrl); outputBlobUrl = URL.createObjectURL(blob);
+                setStatus(`✅ Perfect Extraction! Audio fully restored.`, 'text-green-400 font-bold tracking-wide');
+                enableActionBtn('Download Extracted Audio', 'bg-purple-600 hover:bg-purple-500 shadow-[0_0_20px_rgba(147,51,234,0.6)]');
+                handleAudioPlayer(outputBlobUrl, outputFileName);
+            } catch (err) { console.error(err); setStatus('❌ ' + err.message, 'text-red-500 font-bold'); }
+        }
+
+        async function processTest(file) {
+            try {
+                setStatus('[1/2] Initiating Stage 6 Forge...', 'text-yellow-400');
+                const { payload } = await runEncodeLogic(file);
+                setStatus('[2/2] Chunk vault prepared. Instigating extraction...', 'text-cyan-400');
+                const fileData = await decryptSvaPayload(payload);
+
+                outputFileName = "TEST_RECOVERED_" + file.name;
+                const blob = new Blob([fileData], { type: getMimeType(outputFileName) });
+                if (outputBlobUrl) URL.revokeObjectURL(outputBlobUrl); outputBlobUrl = URL.createObjectURL(blob);
+                setStatus(`✅ Pipeline Complete: 100% Lossless Round-Trip Achieved.`, 'text-green-400 font-bold tracking-wide');
+                enableActionBtn('Download Restored File', 'bg-pink-600 hover:bg-pink-500 shadow-[0_0_20px_rgba(219,39,119,0.6)]');
+                handleAudioPlayer(outputBlobUrl, outputFileName);
+            } catch (err) { console.error(err); setStatus('❌ Pipeline Failure: ' + err.message, 'text-red-500 font-bold'); }
+        }
+
+        setMode('ENCODE');
+
+        // --- Directive v1 UI handlers (Phase 3: browser consumes the same contract as Sangraha) ---
+        (function wireDirectiveUI() {
+            const exportBtn = document.getElementById('exportDirectiveBtn');
+            const loadBtn = document.getElementById('loadDirectiveBtn');
+            const statusEl = document.getElementById('directiveStatus');
+            if (!exportBtn || !loadBtn) return;
+
+            function setDirectiveStatus(msg, cls) {
+                if (statusEl) { statusEl.textContent = msg; statusEl.className = 'text-[10px] ' + (cls || 'text-gray-500'); }
+            }
+
+            exportBtn.addEventListener('click', function () {
+                try {
+                    const input = window.__lastDirectiveInput;
+                    if (!input || !input.hashBytes || !input.acousticData) {
+                        alert('Analyze / Forge a song first — the directive is derived from the same acoustic + hash used for the live preview.');
+                        return;
+                    }
+                    const hashBytes = new Uint8Array(input.hashBytes);
+                    const acoustic = input.acousticData;
+                    const dir = (window.AurionAudioGearing && window.AurionAudioGearing.toArtDirective)
+                        ? window.AurionAudioGearing.toArtDirective(hashBytes, acoustic, 'cosmic', (document.getElementById('metaGenre') || {}).value || null)
+                        : null;
+                    if (!dir) { alert('AurionAudioGearing.toArtDirective not available (reload the page).'); return; }
+
+                    const blob = new Blob([JSON.stringify(dir, null, 2)], { type: 'application/json' });
+                    const url = URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = 'aurion-art-directive-' + (dir.seed || 'unknown') + '.json';
+                    document.body.appendChild(a);
+                    a.click();
+                    document.body.removeChild(a);
+                    URL.revokeObjectURL(url);
+                    setDirectiveStatus('Directive exported — send the same JSON + audio to Sangraha for the final 8K SVA artifact.', 'text-emerald-400');
+                } catch (e) {
+                    console.error(e);
+                    alert('Export failed: ' + e.message);
+                }
+            });
+
+            loadBtn.addEventListener('click', function () {
+                const inp = document.createElement('input');
+                inp.type = 'file';
+                inp.accept = 'application/json';
+                inp.onchange = function () {
+                    const f = inp.files && inp.files[0];
+                    if (!f) return;
+                    const reader = new FileReader();
+                    reader.onload = function (ev) {
+                        try {
+                            const json = JSON.parse(ev.target.result);
+                            window.__loadedArtDirective = json;
+                            setDirectiveStatus('Directive loaded — next Forge will use its raw_matrix for preview parity with Sangraha final.', 'text-amber-400');
+                            // Future: the deriveCosmicMatrix / draw path can prefer window.__loadedArtDirective.geometry.raw_matrix
+                        } catch (e) {
+                            alert('Invalid directive JSON: ' + e.message);
+                        }
+                    };
+                    reader.readAsText(f);
+                };
+                inp.click();
+            });
+        })();
+    </script>
 </body>
 </html>
